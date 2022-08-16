@@ -25,7 +25,7 @@ CREATE TABLE `article`  (
   `article_id` int(0) NOT NULL AUTO_INCREMENT COMMENT '文章ID',
   `article_author_id` int(0) UNSIGNED NOT NULL COMMENT '作者ID',
   `article_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '标题',
-  `article_content` mediumtext(20000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '内容',
+  `article_content` mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '内容',
   `article_update_time` datetime(0) NOT NULL COMMENT '更新时间，默认当前时间',
   `article_create_time` datetime(0) NOT NULL COMMENT '创建时间，默认当前时间',
   `article_summary` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '摘要，默认正文内容截取',
