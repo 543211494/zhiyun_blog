@@ -10,7 +10,7 @@ import java.util.Date;
  * 文章收藏类
  */
 @Data
-public class Collection {
+public class ArticleCollection {
 
     /**
      * 收藏所有者id
@@ -27,13 +27,13 @@ public class Collection {
      */
     private Date createTime;
 
-    public Collection(Integer userId, Integer articleId, Date createTime) {
+    public ArticleCollection(Integer userId, Integer articleId, Date createTime) {
         this.userId = userId;
         this.articleId = articleId;
         this.createTime = createTime;
     }
 
-    public Collection() {
+    public ArticleCollection() {
 
     }
 }
