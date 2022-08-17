@@ -4,10 +4,10 @@ spring:
     static-path-pattern: /**
   resources:
     #静态资源目录
-    #static-locations: [classpath:/dist/,classpath:/mapper/]
+    #static-locations: [classpath:/mapper/]
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/study?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://101.35.0.204:3306/blog?serverTimezone=Asia/Shanghai
     username: root
     password: 123456
   redis:
@@ -39,7 +39,9 @@ mybatis:
   configuration:
     #开启驼峰命名
     map-underscore-to-camel-case: true
+    #打印SQL语句
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 server:
   port: 8888
-  #servlet:
-    #context-path: /test
+  servlet:
+    context-path: /api

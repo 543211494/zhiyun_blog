@@ -1,5 +1,6 @@
 package org.nwpu.blog.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -35,11 +36,13 @@ public class Article {
     /**
      * 更新时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /**
      * 创建时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**
@@ -53,11 +56,18 @@ public class Article {
     private String thumbnail;
 
     /**
+     * 是否通过审核
+     */
+    private boolean isVisible;
+
+    /**
      * 是否删除
      */
     private boolean isDeleted;
 
-    public Article(Integer id, Integer authorId, String title, String content, Date updateTime, Date createTime, String summary, String thumbnail, boolean isDeleted) {
+    public Article(Integer id, Integer authorId, String title, String content,
+                   Date updateTime, Date createTime, String summary, String thumbnail,
+                   boolean isVisible, boolean isDeleted) {
         this.id = id;
         this.authorId = authorId;
         this.title = title;
@@ -66,6 +76,7 @@ public class Article {
         this.createTime = createTime;
         this.summary = summary;
         this.thumbnail = thumbnail;
+        this.isVisible = isVisible;
         this.isDeleted = isDeleted;
     }
 

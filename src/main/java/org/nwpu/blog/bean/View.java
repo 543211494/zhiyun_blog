@@ -1,5 +1,6 @@
 package org.nwpu.blog.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -20,6 +21,7 @@ public class View {
     /**
      * 日期,精确到天
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date date;
 
     /**

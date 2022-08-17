@@ -8,12 +8,20 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.regex.Pattern;
 
+/**
+ * @author lzy
+ * @date 2022/8/17
+ * 邮件操作工具类
+ */
 @Component
 public class EmailSender {
 
     @Value("${spring.mail.from}")
     private String from;
+
+    private final static String TEGEX="^(\\w+([-.][A-Za-z0-9]+)*){3,18}@\\w+([-.][A-Za-z0-9]+)*\\.\\w+([-.][A-Za-z0-9]+)*$";
 
     /**
      * 邮件内容模板
@@ -45,5 +53,17 @@ public class EmailSender {
         }catch (MessagingException messagingException){
             messagingException.printStackTrace();
         }
+    }
+
+    /**
+     * 检验邮箱格式是否正确
+     * @param email 邮箱地址
+     * @return 格式正确与否
+     */
+    public static boolean isEmail(String email) {
+        if ((email != null) && (!email.isEmpty())) {
+            return Pattern.matches(EmailSender.TEGEX, email);
+        }
+        return false;
     }
 }

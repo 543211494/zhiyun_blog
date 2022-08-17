@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.UserMapper">
+    <!--  映射结果集，id为唯一标识符  -->
+    <resultMap id="user" type="org.nwpu.blog.bean.User">
+        <!--    property为java类中的属性名，column为数据库中列名    -->
+        <id property="id" column="user_id" jdbcType="INTEGER"></id>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"></result>
+        <result property="password" column="user_password" jdbcType="VARCHAR"></result>
+        <result property="nickname" column="user_nickname" jdbcType="VARCHAR"></result>
+        <result property="email" column="user_email" jdbcType="VARCHAR"></result>
+        <result property="avatar" column="user_avatar" jdbcType="VARCHAR"></result>
+        <result property="registerTime" column="user_register_time" jdbcType="TIMESTAMP"></result>
+        <result property="lastLoginTime" column="user_lastLogin_time" jdbcType="TIMESTAMP"></result>
+        <result property="isDeleted" column="user_deleted" jdbcType="INTEGER"></result>
+        <result property="role" column="user_role" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+    <insert id="insertUser">
+        INSERT INTO user(user_name,user_password,user_nickname,user_email,
+                         user_avatar,user_register_time,user_lastLogin_time,
+                         user_deleted,user_role)
+        VALUES (#{user.userName},#{user.password},#{user.nickname},#{user.email},
+                #{user.avatar},#{user.registerTime},#{user.lastLoginTime},#{user.isDeleted},#{user.role})
+    </insert>
+
+    <select id="searchUserByUserName" resultMap="user">
+        SELECT user_id,user_name,user_password,user_nickname,user_email,
+               user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
+        FROM user WHERE user_name = #{userName} AND user_deleted = 0
+    </select>
+
+    <select id="searchUserById" resultMap="user">
+        SELECT user_id,user_name,user_password,user_nickname,user_email,
+               user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
+        FROM user WHERE user_id = #{id} AND user_deleted = 0
+    </select>
+
+    <select id="searchUserByNickName" resultMap="user">
+        SELECT user_id,user_name,user_password,user_nickname,user_email,
+               user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
+        FROM user WHERE user_nickname = #{nickname} AND user_deleted = 0
+    </select>
+
+    <select id="searchUserByEmail" resultMap="user">
+        SELECT user_id,user_name,user_password,user_nickname,user_email,
+               user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
+        FROM user WHERE user_email = #{email} AND user_deleted = 0
+    </select>
+
+    <update id="updatePasswordByEmail">
+        UPDATE user SET user_password = #{newPassword} WHERE user_email = #{email} AND user_deleted = 0
+    </update>
+
+    <update id="updateLastLoginTimeById">
+        UPDATE user SET user_lastLogin_time = #{date} WHERE user_id = #{id} AND user_deleted = 0
+    </update>
+
+    <update id="updateAvatarUrlById">
+        UPDATE user SET user_avatar = #{avatar} WHERE user_id = #{id} AND user_deleted = 0
+    </update>
+
+    <update id="updateUser">
+        UPDATE user
+        <set>
+            <if test="user.nickname!=null">
+                user_nickname = #{user.nickname},
+            </if>
+            <if test="user.email!=null">
+                user_email = #{user.email},
+            </if>
+            <if test="user.password!=null">
+                user_password = #{user.password},
+            </if>
+        </set>
+        WHERE user_id = #{user.id} AND user_deleted = 0
+    </update>
+</mapper>

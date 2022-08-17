@@ -1,5 +1,6 @@
 package org.nwpu.blog.bean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
@@ -26,6 +27,11 @@ public class User {
      * 用户权限————普通用户
      */
     private static final String USER = "USER";
+
+    /**
+     * 默认用户头像路径
+     */
+    private static String defaultAvatar = "/api/imgs/avatar/avatar.png";
 
     /**
      * 作者id
@@ -60,11 +66,13 @@ public class User {
     /**
      * 用户注册时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date registerTime;
 
     /**
      * 用户上次登录时间
      */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date lastLoginTime;
 
     /**
@@ -90,7 +98,25 @@ public class User {
         this.role = role;
     }
 
-    public User() {
+    public User(String userName, String password, String nickname, String email) {
+        Date currentTime = new Date();
+        this.userName = userName;
+        this.password = password;
+        this.nickname = nickname;
+        this.email = email;
+        this.registerTime = currentTime;
+        this.lastLoginTime = currentTime;
+        this.isDeleted = false;
+        this.role = User.USER;
+        this.avatar = this.defaultAvatar;
+    }
 
+    public User() {
+        Date currentTime = new Date();
+        this.registerTime = currentTime;
+        this.lastLoginTime = currentTime;
+        this.isDeleted = false;
+        this.role = User.USER;
+        this.avatar = this.defaultAvatar;
     }
 }
