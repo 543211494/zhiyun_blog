@@ -54,6 +54,6 @@ public class Tag {
     }
 
     public Tag() {
-
+        this.isDeleted = false;
     }
 }

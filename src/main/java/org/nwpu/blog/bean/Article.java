@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author lzy
@@ -61,9 +62,29 @@ public class Article {
     private boolean isVisible;
 
     /**
+     * 文章分类
+     */
+    private String category;
+
+    /**
+     * 文章标签
+     */
+    private List<Tag> tags;
+
+    /**
      * 是否删除
      */
     private boolean isDeleted;
+
+    /**
+     * 文章默认封面图片URL
+     */
+    private static String defaultThumbnail = "/api/imgs/article/default.png";
+
+    /**
+     * 文章最大长度
+     */
+    public final static int MAXLENGTH = 30000;
 
     public Article(Integer id, Integer authorId, String title, String content,
                    Date updateTime, Date createTime, String summary, String thumbnail,
@@ -80,6 +101,24 @@ public class Article {
         this.isDeleted = isDeleted;
     }
 
+    public Article(Integer authorId, String title, String content) {
+        this.authorId = authorId;
+        this.title = title;
+        this.content = content;
+        Date date = new Date();
+        this.updateTime = date;
+        this.createTime = date;
+        this.thumbnail = Article.defaultThumbnail;
+        this.isVisible = false;
+        this.isDeleted = false;
+    }
+
     public Article() {
+        Date date = new Date();
+        this.updateTime = date;
+        this.createTime = date;
+        this.thumbnail = Article.defaultThumbnail;
+        this.isVisible = false;
+        this.isDeleted = false;
     }
 }

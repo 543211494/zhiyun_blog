@@ -56,6 +56,9 @@ public class Category {
     }
 
     public Category() {
-
+        Date date = new Date();
+        this.updateTime = date;
+        this.createTime = date;
+        this.isDeleted = false;
     }
 }

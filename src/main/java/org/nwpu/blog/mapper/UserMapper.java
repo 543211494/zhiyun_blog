@@ -9,35 +9,44 @@ import java.util.Date;
 @Mapper
 public interface UserMapper {
 
+    /**
+     * 新增一个用户
+     * @param user 要新增的用户
+     * @return 操作结果
+     */
     public boolean insertUser(@Param("user")User user);
 
     /**
      * 根据用户名查询用户
      * @param userName 用户名
+     * @param searchAll 是否查询所有(包括被删除的)
      * @return 查询到的用户
      */
-    public User searchUserByUserName(@Param("userName") String userName);
+    public User searchUserByUserName(@Param("userName") String userName,@Param("searchAll")boolean searchAll);
 
     /**
      * 根据用户id查询用户
      * @param id 用户id
+     * @param searchAll 是否查询所有(包括被删除的)
      * @return 查询到的用户
      */
-    public User searchUserById(@Param("id") Integer id);
+    public User searchUserById(@Param("id") Integer id,@Param("searchAll")boolean searchAll);
 
     /**
      * 根据用户昵称查询用户
      * @param nickname 用户昵称
+     * @param searchAll 是否查询所有(包括被删除的)
      * @return 查询到的用户
      */
-    public User searchUserByNickName(@Param("nickname") String nickname);
+    public User searchUserByNickName(@Param("nickname") String nickname,@Param("searchAll")boolean searchAll);
 
     /**
      * 根据用户邮箱查询用户
      * @param email 用户邮箱
+     * @param searchAll 是否查询所有(包括被删除的)
      * @return 查询到的用户
      */
-    public User searchUserByEmail(@Param("email") String email);
+    public User searchUserByEmail(@Param("email") String email,@Param("searchAll")boolean searchAll);
 
     /**
      * 根据邮箱修改密码

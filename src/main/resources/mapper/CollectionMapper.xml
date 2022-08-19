@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.CollectionMapper">
+    <resultMap id="collection" type="org.nwpu.blog.bean.ArticleCollection">
+        <id property="userId" column="user_id" jdbcType="INTEGER"></id>
+        <id property="articleId" column="article_id" jdbcType="INTEGER"></id>
+        <result property="createTime" column="collection_create_time" jdbcType="TIMESTAMP"></result>
+    </resultMap>
+
+    <insert id="insertCollection">
+        INSERT INTO collection(user_id,article_id,collection_create_time)
+        SELECT #{collection.userId},#{collection.articleId},#{collection.createTime}
+        FROM DUAL
+        WHERE NOT EXISTS (SELECT * FROM collection WHERE user_id = #{collection.userId} AND article_id = #{collection.articleId})
+    </insert>
+</mapper>

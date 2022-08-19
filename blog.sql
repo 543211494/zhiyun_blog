@@ -11,7 +11,7 @@
  Target Server Version : 80023
  File Encoding         : 65001
 
- Date: 17/08/2022 11:08:30
+ Date: 18/08/2022 17:44:12
 */
 
 SET NAMES utf8mb4;
@@ -30,7 +30,7 @@ CREATE TABLE `article`  (
   `article_create_time` datetime(0) NOT NULL COMMENT '创建时间，默认当前时间',
   `article_summary` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '摘要，默认正文内容截取',
   `article_thumbnail` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '缩略图，默认图片地址',
-  `article_visible` int(0) NOT NULL COMMENT '文章是否审核通过，1通过，0未通过',
+  `article_visible` int(0) NOT NULL DEFAULT 0 COMMENT '文章是否审核通过，1通过，0未通过',
   `article_deleted` int(0) UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否已删除，0未删除，1已删除',
   PRIMARY KEY (`article_id`) USING BTREE,
   INDEX `article_author_id`(`article_author_id`) USING BTREE
@@ -104,15 +104,13 @@ CREATE TABLE `comment`  (
   `comment_pid` int(0) NOT NULL DEFAULT -1 COMMENT '上级评论ID,默认-1',
   `comment_article_id` int(0) NOT NULL COMMENT '文章ID',
   `comment_author_id` int(0) UNSIGNED NOT NULL COMMENT '评论人ID',
-  `comment_user_id` int(0) UNSIGNED NULL DEFAULT NULL COMMENT '评论对象ID,可能为空',
   `comment_content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '内容',
   `comment_create_time` datetime(0) NOT NULL COMMENT '评论创建时间',
   `comment_deleted` int(0) NOT NULL DEFAULT 0 COMMENT '是否已删除，1已删除',
   PRIMARY KEY (`comment_id`) USING BTREE,
   INDEX `comment_article_id`(`comment_article_id`) USING BTREE,
-  INDEX `comment_author_id`(`comment_author_id`) USING BTREE,
-  INDEX `comment_user_id`(`comment_user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+  INDEX `comment_author_id`(`comment_author_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for message
@@ -143,7 +141,7 @@ CREATE TABLE `notice`  (
   `notice_deleted` int(0) NOT NULL DEFAULT 0 COMMENT '是否已删除，1已删除',
   PRIMARY KEY (`notice_id`) USING BTREE,
   INDEX `notice_publisher_id`(`notice_publisher_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for score
@@ -193,4 +191,3 @@ CREATE TABLE `user`  (
   PRIMARY KEY (`user_id`) USING BTREE,
   UNIQUE INDEX `user_nickname`(`user_nickname`) USING BTREE COMMENT '昵称不能重复'
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-

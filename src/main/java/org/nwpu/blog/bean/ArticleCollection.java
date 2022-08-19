@@ -35,6 +35,12 @@ public class ArticleCollection {
         this.createTime = createTime;
     }
 
+    public ArticleCollection(Integer userId, Integer articleId) {
+        this.userId = userId;
+        this.articleId = articleId;
+        this.createTime = new Date();
+    }
+
     public ArticleCollection() {
 
     }

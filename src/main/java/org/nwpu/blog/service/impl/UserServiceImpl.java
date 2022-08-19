@@ -26,23 +26,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUserName(String userName) {
-        return userMapper.searchUserByUserName(userName);
+    public User getUserByUserName(String userName,boolean searchAll) {
+        return userMapper.searchUserByUserName(userName,searchAll);
     }
 
     @Override
-    public User getUserById(Integer id) {
-        return userMapper.searchUserById(id);
+    public User getUserById(Integer id,boolean searchAll) {
+        return userMapper.searchUserById(id,searchAll);
     }
 
     @Override
-    public User getUserByNickName(String nickname) {
-        return userMapper.searchUserByNickName(nickname);
+    public User getUserByNickName(String nickname,boolean searchAll) {
+        return userMapper.searchUserByNickName(nickname,searchAll);
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        return userMapper.searchUserByEmail(email);
+    public User getUserByEmail(String email,boolean searchAll) {
+        return userMapper.searchUserByEmail(email,searchAll);
     }
 
     @Override

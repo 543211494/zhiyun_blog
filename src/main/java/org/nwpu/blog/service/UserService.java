@@ -20,28 +20,28 @@ public interface UserService {
      * @param userName 用户名
      * @return 查询到的用户
      */
-    public User getUserByUserName(String userName);
+    public User getUserByUserName(String userName,boolean searchAll);
 
     /**
      * 根据用户id查询用户
      * @param id 用户id
      * @return 查询到的用户
      */
-    public User getUserById(Integer id);
+    public User getUserById(Integer id,boolean searchAll);
 
     /**
      * 根据用户昵称查询用户
      * @param nickname 用户昵称
      * @return 查询到的用户
      */
-    public User getUserByNickName(String nickname);
+    public User getUserByNickName(String nickname,boolean searchAll);
 
     /**
      * 根据用户昵称查询用户
      * @param email 用户昵称
      * @return 查询到的用户
      */
-    public User getUserByEmail(String email);
+    public User getUserByEmail(String email,boolean searchAll);
 
     /**
      * 根据邮箱修改密码

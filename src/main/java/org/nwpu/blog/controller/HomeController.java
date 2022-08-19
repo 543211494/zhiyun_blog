@@ -42,6 +42,9 @@ public class HomeController {
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * 验证码长度
+     */
     private int length = 6;
 
     @RequestMapping(value = "/register",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
@@ -50,13 +53,13 @@ public class HomeController {
                                @RequestParam("email")String email,@RequestParam("password")String password){
         Response response = new Response<Object>();
         response.setData(null);
-        if(userService.getUserByUserName(userName)!=null){
+        if(userService.getUserByUserName(userName,true)!=null){
             response.setCode(300);
             response.setMessage("用户名重复");
-        }else if(userService.getUserByNickName(nickname)!=null){
+        }else if(userService.getUserByNickName(nickname,true)!=null){
             response.setCode(301);
             response.setMessage("昵称重复");
-        }else if(userService.getUserByEmail(email)!=null){
+        }else if(userService.getUserByEmail(email,true)!=null){
             response.setCode(302);
             response.setMessage("邮箱已存在");
         }else{
@@ -77,7 +80,7 @@ public class HomeController {
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String login(@RequestParam("userName")String userName,@RequestParam("password")String password){
-        User user = userService.getUserByUserName(userName);
+        User user = userService.getUserByUserName(userName,false);
         Response response = new Response<Object>();
         /* 用户放置返回参数 */
         Map<String,Object> map = new HashMap<String,Object>();

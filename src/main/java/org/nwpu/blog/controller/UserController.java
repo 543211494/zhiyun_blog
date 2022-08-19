@@ -17,8 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author lzy
@@ -32,6 +33,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 上传用户头像
+     * @param file 用户头像图片文件
+     * @param token 用户登录令牌
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "/user/user/uploadAvatar",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String uploadAvatar(@RequestParam("avatar") MultipartFile file, @RequestParam("token")String token,
@@ -40,7 +48,11 @@ public class UserController {
         Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
         /* 只允许上传xxx.png或xxx.jpg格式的文件作为头像 */
         String[] fileinfo = file.getOriginalFilename().split("\\.");
-        if(!(fileinfo[fileinfo.length-1].equals("jpg")||fileinfo[fileinfo.length-1].equals("png"))){
+        if(fileinfo[0].isEmpty()){
+            response.setCode(400);
+            response.setMessage("上传失败,文件为空!");
+            return JSON.toString(response);
+        }else if(!(fileinfo[fileinfo.length-1].equals("jpg")||fileinfo[fileinfo.length-1].equals("png"))){
             response.setCode(332);
             response.setMessage("文件格式错误，只允许上传.jpg或.png格式的文件!");
             return JSON.toString(response);
@@ -51,7 +63,6 @@ public class UserController {
         /* 判断存放头像图片的根目录是否存在，若不存在则新建文件夹 */
         File avatarRoot = new File(root);
         if(!avatarRoot.exists()){
-            log.info("mkdir");
             avatarRoot.mkdirs();
         }
         /* 保存头像图片，文件名为用户id */
@@ -70,12 +81,23 @@ public class UserController {
             oldAvatar.delete();
         }
         /* 更新用户头像路径 */
-        userService.updateAvatarById(userId,"/imgs/avatar/"+userId + "." + fileinfo[fileinfo.length-1]);
+        userService.updateAvatarById(userId,"/api/imgs/avatar/"+userId + "." + fileinfo[fileinfo.length-1]);
         response.setCode(200);
         response.setMessage("头像上传成功!");
+        Map<String,String> data = new HashMap<String,String>();
+        data.put("url","/api/imgs/avatar/"+userId + "." + fileinfo[fileinfo.length-1]);
+        response.setData(data);
         return JSON.toString(response);
     }
 
+    /**
+     * 跟新用户数据
+     * @param nickname 用户新昵称
+     * @param email 用户邮箱
+     * @param password 用户密码
+     * @param token 用户令牌
+     * @return
+     */
     @RequestMapping(value = "/user/user/updateUser",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String updateUser(@RequestParam("nickname")String nickname,@RequestParam("email")String email,
@@ -91,14 +113,14 @@ public class UserController {
             response.setMessage("邮箱格式错误!");
             return JSON.toString(response);
         }else{
-            User other = userService.getUserByEmail(email);
+            User other = userService.getUserByEmail(email,true);
             if(other!=null&&!other.getId().equals(userId)){
                 response.setCode(400);
                 response.setMessage("邮箱已被占用!");
                 return JSON.toString(response);
             }
             other = null;
-            other = userService.getUserByNickName(nickname);
+            other = userService.getUserByNickName(nickname,true);
             if(other!=null&&!other.getId().equals(userId)){
                 response.setCode(330);
                 response.setMessage("昵称已被占用!");

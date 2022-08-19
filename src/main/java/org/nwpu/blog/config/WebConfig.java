@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @author lzy
  * @date 2022/8/16
- * web配置类
+ * WebMVC配置类
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(this.userInterceptor).addPathPatterns("/api/user/**");
-        registry.addInterceptor(this.adminInterceptor).addPathPatterns("/api/admin/**");
+        registry.addInterceptor(this.userInterceptor).addPathPatterns("/user/**","/api/user/**");
+        registry.addInterceptor(this.adminInterceptor).addPathPatterns("/admin/**","/api/admin/**");
     }
 }

@@ -1,6 +1,7 @@
 package org.nwpu.blog.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.nwpu.blog.service.ArticleService;
 import org.nwpu.blog.service.UserService;
 import org.nwpu.blog.util.EmailSender;
 import org.nwpu.blog.util.JSON;
@@ -26,6 +27,9 @@ public class Test {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ArticleService articleService;
+
     @RequestMapping(value = "/sendEmail",method = RequestMethod.POST)
     @ResponseBody
     public String sendEmail(@RequestParam("to") String to){
@@ -34,7 +38,7 @@ public class Test {
         return "{\"status\":200}";
     }
 
-    @RequestMapping(value = "/api/user/register",method = RequestMethod.POST)
+    @RequestMapping(value = "/user/register",method = RequestMethod.POST)
     @ResponseBody
     public String register(@RequestParam("userName") String userName, @RequestHeader("Authorization")String token){
 //        log.info(userName);
@@ -49,7 +53,6 @@ public class Test {
 //        System.out.println(JSON.toString(userService.getUserByEmail("123")));
 //        System.out.println(JSON.toString(userService.getUserByNickName("nickname001")));
 //        System.out.println(JSON.toString(userService.getUserByNickName("nickname")));
-        userService.updatePasswordByEmail("lha602@163.com","12345");
-        return "{\"status\":200}";
+        return JSON.toString(articleService.getArticleById(1,true,false));
     }
 }

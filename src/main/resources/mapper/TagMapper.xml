@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.TagMapper">
+    <resultMap id="tag" type="org.nwpu.blog.bean.Tag">
+        <id property="id" column="tag_id" jdbcType="INTEGER"></id>
+        <result property="name" column="tag_name" jdbcType="VARCHAR"></result>
+        <result property="description" column="tag_description" jdbcType="VARCHAR"></result>
+        <result property="updateTime" column="tag_create_time" jdbcType="TIMESTAMP"></result>
+        <result property="createTime" column="tag_update_time" jdbcType="TIMESTAMP"></result>
+        <result property="isDeleted" column="tag_deleted" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <!--  批量无重复地插入大量数据,ON DUPLICATE KEY UPDATE(存在即更新)是MySQL方言非标准SQL语法  -->
+    <insert id="insertTags">
+        INSERT INTO tag(tag_name,tag_description,tag_create_time,tag_update_time,tag_deleted)
+        VALUES
+        <foreach collection="tags" item="tag" separator=",">
+               (#{tag.name},#{tag.description},#{tag.createTime},#{tag.updateTime},#{tag.isDeleted})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        tag_update_time = VALUES(tag_update_time);
+    </insert>
+
+    <select id="getTagsIdByName" resultType="java.lang.Integer">
+        SELECT DISTINCT tag_id FROM tag
+        WHERE tag_name IN
+        (
+        <foreach collection="names" item="name" separator=",">
+            #{name}
+        </foreach>
+        )
+    </select>
+</mapper>

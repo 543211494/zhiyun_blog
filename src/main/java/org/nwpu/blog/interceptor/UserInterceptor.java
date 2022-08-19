@@ -1,6 +1,9 @@
 package org.nwpu.blog.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,6 +19,10 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class UserInterceptor implements HandlerInterceptor {
 
+    @Autowired
+    @Qualifier(value = "redisTemplate")
+    private RedisTemplate redisTemplate;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //System.out.println(request.getHeader("Authorization"));
@@ -23,7 +30,7 @@ public class UserInterceptor implements HandlerInterceptor {
 //            throw new RuntimeException("test!");
 //        }
         log.info("URL:"+request.getRequestURI());
-        log.info("tokne:"+request.getParameter("token"));
+        log.info("token:"+request.getParameter("token"));
         return true;
     }
 }

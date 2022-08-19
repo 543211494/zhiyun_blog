@@ -27,25 +27,25 @@
     <select id="searchUserByUserName" resultMap="user">
         SELECT user_id,user_name,user_password,user_nickname,user_email,
                user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
-        FROM user WHERE user_name = #{userName} AND user_deleted = 0
+        FROM user WHERE user_name = #{userName} <if test="!searchAll">AND user_deleted = 0</if>
     </select>
 
     <select id="searchUserById" resultMap="user">
         SELECT user_id,user_name,user_password,user_nickname,user_email,
                user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
-        FROM user WHERE user_id = #{id} AND user_deleted = 0
+        FROM user WHERE user_id = #{id} <if test="!searchAll">AND user_deleted = 0</if>
     </select>
 
     <select id="searchUserByNickName" resultMap="user">
         SELECT user_id,user_name,user_password,user_nickname,user_email,
                user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
-        FROM user WHERE user_nickname = #{nickname} AND user_deleted = 0
+        FROM user WHERE user_nickname = #{nickname} <if test="!searchAll">AND user_deleted = 0</if>
     </select>
 
     <select id="searchUserByEmail" resultMap="user">
         SELECT user_id,user_name,user_password,user_nickname,user_email,
                user_avatar,user_register_time,user_lastLogin_time,user_deleted,user_role
-        FROM user WHERE user_email = #{email} AND user_deleted = 0
+        FROM user WHERE user_email = #{email} <if test="!searchAll">AND user_deleted = 0</if>
     </select>
 
     <update id="updatePasswordByEmail">

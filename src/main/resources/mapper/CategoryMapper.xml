@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.CategoryMapper">
+    <resultMap id="category" type="org.nwpu.blog.bean.Category">
+        <id property="id" column="category_id" jdbcType="INTEGER"></id>
+        <result property="name" column="category_name" jdbcType="VARCHAR"></result>
+        <result property="description" column="category_description" jdbcType="VARCHAR"></result>
+        <result property="createTime" column="category_create_time" jdbcType="TIMESTAMP"></result>
+        <result property="updateTime" column="category_update_time" jdbcType="TIMESTAMP"></result>
+        <result property="isDeleted" column="category_deleted" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <insert id="insertCategory" parameterType="org.nwpu.blog.bean.Category" useGeneratedKeys="true" keyProperty="id" keyColumn="category_id">
+        INSERT INTO category(category_name,category_description,
+                             category_create_time,category_update_time,category_deleted)
+        SELECT #{name},#{description},#{createTime},#{updateTime},#{isDeleted}
+        FROM DUAL
+        WHERE NOT EXISTS(SELECT category_name FROM category WHERE category_name = #{name});
+    </insert>
+
+    <select id="getCategoryByName" resultMap="category">
+        SELECT category_id,category_name,category_description,
+               category_create_time,category_update_time,category_deleted
+        FROM category WHERE category_name = #{name}
+    </select>
+</mapper>
