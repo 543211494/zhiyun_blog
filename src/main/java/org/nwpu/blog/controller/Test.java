@@ -40,7 +40,7 @@ public class Test {
 
     @RequestMapping(value = "/user/register",method = RequestMethod.POST)
     @ResponseBody
-    public String register(@RequestParam("userName") String userName, @RequestHeader("Authorization")String token){
+    public String register(@RequestParam("userName") String userName){
 //        log.info(userName);
 //        String preUuid = UUID.randomUUID().toString();
 //        log.info(preUuid);
@@ -53,6 +53,6 @@ public class Test {
 //        System.out.println(JSON.toString(userService.getUserByEmail("123")));
 //        System.out.println(JSON.toString(userService.getUserByNickName("nickname001")));
 //        System.out.println(JSON.toString(userService.getUserByNickName("nickname")));
-        return JSON.toString(articleService.getArticleById(1,true,false));
+        return JSON.toString(articleService.getArticleById(1,true,true,true));
     }
 }

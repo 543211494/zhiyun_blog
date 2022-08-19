@@ -21,6 +21,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,8 @@ public class ArticleController {
 
     @Autowired
     private TagService tagService;
+
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 处理文章发布，其主要步骤为:
@@ -129,7 +132,7 @@ public class ArticleController {
                 response.setMessage("文章id格式错误!");
                 return JSON.toString(response);
             }
-            Article article = articleService.getArticleById(articleId,false,false);
+            Article article = articleService.getArticleById(articleId,true,false,false);
             if(article==null){
                 response.setCode(400);
                 response.setMessage("文章不存在!");
@@ -240,7 +243,7 @@ public class ArticleController {
             response.setMessage("文章id格式错误!");
             return JSON.toString(response);
         }
-        if(articleService.getArticleById(articleId,false,false)==null){
+        if(articleService.getArticleById(articleId,true,false,false)==null){
             response.setCode(400);
             response.setMessage("文章不存在!");
             return JSON.toString(response);
@@ -289,11 +292,38 @@ public class ArticleController {
         return JSON.toString(response);
     }
 
-
     @RequestMapping(value = "/user/article/getArticleById",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String getArticleById(){
+    public String getArticleById(@RequestParam("articleId")String id,@RequestParam("token")String token){
         Response response = new Response<Object>();
+        Integer articleId = null;
+        try{
+            articleId = Integer.parseInt(id);
+        }catch (Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        Article article = articleService.getArticleById(articleId,true,true,true);
+        if(article==null){
+            response.setCode(400);
+            response.setMessage("文章不存在!");
+            return JSON.toString(response);
+        }
+        response.setCode(200);
+        articleService.addArticleView(articleId);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("articleId",article.getId());
+        data.put("authorId",article.getAuthorId());
+        data.put("title",article.getTitle());
+        data.put("content",article.getContent());
+        data.put("createTime",simpleDateFormat.format(article.getCreateTime()));
+        data.put("updateTime",simpleDateFormat.format(article.getUpdateTime()));
+        data.put("category",article.getCategory());
+        data.put("tags",article.getTags());
+        data.put("view",articleService.searchArticleViewById(articleId));
+        response.setData(data);
+        response.setMessage("获取文章成功!");
         return JSON.toString(response);
     }
     /**

@@ -10,8 +10,6 @@ spring:
     url: jdbc:mysql://101.35.0.204:3306/blog?serverTimezone=Asia/Shanghai
     username: root
     password: 123456
-  jpa:
-    show-sql: true
   redis:
     host: 101.35.0.204
     port: 6379

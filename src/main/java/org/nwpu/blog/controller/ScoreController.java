@@ -43,7 +43,7 @@ public class ScoreController {
             response.setMessage("数据格式不正确!");
             return JSON.toString(response);
         }
-        if(articleService.getArticleById(articleId,false,false)==null){
+        if(articleService.getArticleById(articleId,true,true,false)==null){
             response.setCode(352);
             response.setMessage("文章不存在!");
             return JSON.toString(response);

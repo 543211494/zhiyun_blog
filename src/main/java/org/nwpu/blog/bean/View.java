@@ -21,7 +21,7 @@ public class View {
     /**
      * 日期,精确到天
      */
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd")
     private Date date;
 
     /**

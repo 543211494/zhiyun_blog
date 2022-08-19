@@ -56,11 +56,12 @@ public interface ArticleMapper {
     /**
      * 根据文章id查询文章
      * @param articleId 文章id
-     * @param searchAll 是否查询全部文章(包括被删除的)
+     * @param searchDelete true查询被删除的文章,false查询全部(删除和未删除)文章
+     * @param searchPass true查询通过审核的文章，false查询全部(审核通过和未通过)的文章
      * @param isDetail 是否查询详细信息,即是否包括tags和category
      * @return 查询结果
      */
-    public Article searchArticleById(@Param("articleId") Integer articleId,@Param("searchAll") boolean searchAll,@Param("isDetail") boolean isDetail);
+    public Article searchArticleById(@Param("articleId") Integer articleId,@Param("searchDelete") boolean searchDelete,@Param("searchPass")boolean searchPass,@Param("isDetail") boolean isDetail);
 
     /**
      * 根据文章id删除文章

@@ -47,7 +47,7 @@ public class CollectionController {
         }
         /* 通过token获取用户id */
         Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
-        if(articleService.getArticleById(articleId,false,false)==null){
+        if(articleService.getArticleById(articleId,true,true,false)==null){
             response.setCode(352);
             response.setMessage("文章不存在!");
             return JSON.toString(response);

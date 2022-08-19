@@ -2,6 +2,7 @@ package org.nwpu.blog.service.impl;
 
 import org.nwpu.blog.bean.Article;
 import org.nwpu.blog.mapper.ArticleMapper;
+import org.nwpu.blog.mapper.ViewMapper;
 import org.nwpu.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleMapper articleMapper;
+
+    @Autowired
+    private ViewMapper viewMapper;
 
     @Override
     public Integer addArticle(Article article) {
@@ -81,8 +85,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Article getArticleById(Integer articleId,boolean searchAll,boolean isDetail) {
-        return articleMapper.searchArticleById(articleId,searchAll,isDetail);
+    public Article getArticleById(Integer articleId,boolean searchDelete,boolean searchPass,boolean isDetail) {
+        return articleMapper.searchArticleById(articleId,searchDelete,searchPass,isDetail);
     }
 
     @Override
@@ -127,5 +131,28 @@ public class ArticleServiceImpl implements ArticleService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean addArticleView(Integer articleId) {
+        try{
+            viewMapper.addArticleView(articleId);
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Integer searchArticleViewById(Integer articleId) {
+        Integer count = null;
+        try{
+            count = viewMapper.searchTotalViewByArticleId(articleId);
+        }catch(Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return count==null?0:count;
     }
 }

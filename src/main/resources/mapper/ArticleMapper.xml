@@ -69,7 +69,9 @@
                tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
                tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
                </if>
-        FROM article<if test="isDetail">,category,tag</if> WHERE article_id = #{articleId} <if test="!searchAll">AND article_deleted = 0</if>
+        FROM article<if test="isDetail">,category,tag</if> WHERE article_id = #{articleId}
+        <if test="searchDelete">AND article_deleted = 0</if>
+        <if test="searchPass">AND article_visible = 1</if>
         <if test="isDetail">
         AND category.category_id IN (SELECT category_id
                                     FROM article_category_ref
