@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -87,5 +88,44 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public boolean setUserRoleById(Integer userId, String role) {
+        try{
+            userMapper.setUserRoleById(userId,role);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteUserById(Integer userId) {
+        try{
+            userMapper.deleteUserById(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public List<User> listUsers(Integer currentPage, Integer pageSize) {
+        int start = (currentPage.intValue()-1)*pageSize;
+        return userMapper.listUsers(start,pageSize);
+    }
+
+    @Override
+    public Integer getTotalPages(Integer pageSize) {
+        int size = userMapper.getUsersSize();
+        if(size==0){
+            return 0;
+        }else{
+            size = (size/pageSize) + (size%pageSize==0?0:1);
+        }
+        return size;
     }
 }

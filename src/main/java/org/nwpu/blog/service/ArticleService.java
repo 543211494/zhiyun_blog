@@ -1,6 +1,9 @@
 package org.nwpu.blog.service;
 
+import org.apache.ibatis.annotations.Param;
 import org.nwpu.blog.bean.Article;
+import org.nwpu.blog.bean.Score;
+import org.nwpu.blog.bean.View;
 
 import java.util.List;
 
@@ -101,7 +104,62 @@ public interface ArticleService {
     /**
      * 查询一篇文章的总阅读量
      * @param articleId
-     * @return
+     * @return 文章总阅读量
      */
     public Integer searchArticleViewById(Integer articleId);
+
+    /**
+     * 按页查询指定用户发布的文章
+     * @param authorId 作者id
+     * @param currentPage 当前页码
+     * @param pageSize 每一页的大小
+     * @param result 存放查询结果的列表
+     * @return 总页数
+     */
+    public Integer listArticlesByAuthorId(Integer authorId,Integer currentPage,Integer pageSize,List<Article> result);
+
+    /**
+     * 查询一组文章的评分
+     * @param articles 要查询评分的文章
+     * @return 查询结果
+     */
+    public List<Score> listScoresByArticle(List<Article> articles);
+
+    /**
+     * 查询一篇文章的平均得分
+     * @param articleId 文章id
+     * @return
+     */
+    public Double searchAvgScoreByArticleId(Integer articleId);
+
+    /**
+     * 按页查询指定用户的收藏
+     * @param userId 用户id
+     * @param currentPage 当前页码
+     * @param pageSize 每页的大小
+     * @param result 存在查询结果的列表
+     * @return 总页数
+     */
+    public Integer listCollectionsByUserId(Integer userId,Integer currentPage,Integer pageSize,List<Article> result);
+
+    /**
+     * 根据文章id查询文章阅读量
+     * @param articles 文章id列表
+     * @return 查询结果
+     */
+    public List<View> listViewsByArticleId(List<Article> articles);
+
+    /**
+     * 根据用户id查询用户发布的总文章数
+     * @param authorId
+     * @return
+     */
+    public Integer searchArticleNumByAuthorId(Integer authorId);
+
+    /**
+     * 查询一个作者文章的总阅读量
+     * @param authorId 用户id
+     * @return 文章总阅读量
+     */
+    public Integer searchViewsByAuthorId(Integer authorId);
 }

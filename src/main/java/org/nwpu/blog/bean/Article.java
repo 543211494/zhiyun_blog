@@ -72,6 +72,16 @@ public class Article {
     private List<Tag> tags;
 
     /**
+     * 文章评分
+     */
+    private Double score = 0.0;
+
+    /**
+     * 文章阅读量
+     */
+    private Integer view = 0;
+
+    /**
      * 是否删除
      */
     private boolean isDeleted;

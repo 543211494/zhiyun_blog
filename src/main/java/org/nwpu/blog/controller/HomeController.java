@@ -47,21 +47,37 @@ public class HomeController {
      */
     private int length = 6;
 
+    /**
+     * 注册接口
+     * @param userName 用户名
+     * @param nickname 昵称
+     * @param email 电子邮件
+     * @param password 密码
+     * @param code 验证码
+     * @return
+     */
     @RequestMapping(value = "/register",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String register(@RequestParam("userName")String userName,@RequestParam("nickname")String nickname,
-                               @RequestParam("email")String email,@RequestParam("password")String password){
+                           @RequestParam("email")String email,@RequestParam("password")String password,
+                           @RequestParam("code")String code){
         Response response = new Response<Object>();
         response.setData(null);
-        if(userService.getUserByUserName(userName,true)!=null){
+        if(code==null||code.isEmpty()){
+            response.setCode(400);
+            response.setMessage("验证码为空!");
+        }else if(!(code.equals((String)redisTemplate.opsForValue().get(email)))){
+            response.setCode(400);
+            response.setMessage("无效验证码!");
+        }else if(userService.getUserByUserName(userName,true)!=null){
             response.setCode(300);
-            response.setMessage("用户名重复");
+            response.setMessage("用户名重复!");
         }else if(userService.getUserByNickName(nickname,true)!=null){
             response.setCode(301);
-            response.setMessage("昵称重复");
+            response.setMessage("昵称重复!");
         }else if(userService.getUserByEmail(email,true)!=null){
             response.setCode(302);
-            response.setMessage("邮箱已存在");
+            response.setMessage("邮箱已存在!");
         }else{
             User user = new User(userName,password,nickname,email);
             try{
@@ -73,10 +89,17 @@ public class HomeController {
             }
             response.setCode(200);
             response.setMessage("注册成功!");
+            redisTemplate.delete(email);
         }
         return JSON.toString(response);
     }
 
+    /**
+     * 登录接口
+     * @param userName 用户名
+     * @param password 密码
+     * @return
+     */
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String login(@RequestParam("userName")String userName,@RequestParam("password")String password){
@@ -118,6 +141,11 @@ public class HomeController {
         return JSON.toString(response);
     }
 
+    /**
+     * 获取验证码
+     * @param email 邮箱地址
+     * @return
+     */
     @RequestMapping(value = "/getCode",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String sendEmail(@RequestParam("email")String email){
@@ -146,6 +174,13 @@ public class HomeController {
         return JSON.toString(response);
     }
 
+    /**
+     * 修改密码
+     * @param email 邮箱地址
+     * @param code 验证码
+     * @param password 密码
+     * @return
+     */
     @RequestMapping(value = "/updatePassword",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String updatePassword(@RequestParam("email")String email,@RequestParam("code")String code,@RequestParam("password")String password){

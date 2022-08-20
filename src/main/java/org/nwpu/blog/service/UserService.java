@@ -5,6 +5,7 @@ import org.nwpu.blog.bean.User;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 public interface UserService {
 
@@ -73,4 +74,34 @@ public interface UserService {
      * @return 操作结果
      */
     public boolean updateUser(User user);
+
+    /**
+     * 根据用户id修改用户权限
+     * @param userId 用户id
+     * @param role 用户新权限
+     * @return 操作结果
+     */
+    public boolean setUserRoleById(Integer userId,String role);
+
+    /**
+     * 根据用户id删除用户
+     * @param userId 用户id
+     * @return 操作结果
+     */
+    public boolean deleteUserById(Integer userId);
+
+    /**
+     * 按页查询用户
+     * @param currentPage 当前页码
+     * @param pageSize 一页的数目
+     * @return 查询结果
+     */
+    public List<User> listUsers(Integer currentPage,Integer pageSize);
+
+    /**
+     * 获取用户总页数
+     * @param pageSize 一页的大小
+     * @return 用户总页数
+     */
+    public Integer getTotalPages(Integer pageSize);
 }

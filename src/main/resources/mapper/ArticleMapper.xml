@@ -24,6 +24,20 @@
         </collection>
     </resultMap>
 
+    <!--  文章评分  -->
+    <resultMap id="score" type="org.nwpu.blog.bean.Score">
+        <id property="articleId" column="articleId" jdbcType="INTEGER"></id>
+        <result property="count" column="score_count" jdbcType="INTEGER"></result>
+        <result property="score" column="score" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <!--  文章阅读量  -->
+    <resultMap id="view" type="org.nwpu.blog.bean.View">
+        <id property="articleId" column="article_id"></id>
+        <result property="date" column="view_date"></result>
+        <result property="count" column="view_count"></result>
+    </resultMap>
+
     <!--  插入后返回主键  -->
     <insert id="insertArticle" parameterType="org.nwpu.blog.bean.Article" useGeneratedKeys="true" keyProperty="id" keyColumn="article_id">
         INSERT INTO article(article_author_id,article_title,article_content,
@@ -77,7 +91,8 @@
                                     FROM article_category_ref
                                     WHERE article_id = #{articleId}) AND tag.tag_id IN(SELECT tag_id
                                                                                        FROM article_tag_ref
-                                                                                       WHERE article_id = #{articleId});
+                                                                                       WHERE article_id = #{articleId})
+                                    AND article_deleted = 0
         </if>
     </select>
 
@@ -99,4 +114,89 @@
     <insert id="updateThumbnail">
         UPDATE article SET article_thumbnail = #{thumbnail} WHERE article_id = #{articleId}
     </insert>
+
+    <select id="listArticlesByAuthorId" resultMap="article">
+        SELECT article_id,article_author_id,article_title,article_content,
+               article_update_time,article_create_time,article_summary,
+               article_thumbnail,article_visible,article_deleted,
+               category.category_name category_name,
+               tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
+               tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
+        FROM article,category,tag WHERE article_author_id = #{authorId} AND article_deleted = 0
+                                    AND category.category_id IN (SELECT category_id
+                                                                 FROM article_category_ref
+                                                                 WHERE article_category_ref.article_id = article.article_id)
+                                    AND tag.tag_id IN (SELECT tag_id
+                                                       FROM article_tag_ref
+                                                       WHERE article_tag_ref.article_id = article.article_id)
+                                    AND article_deleted = 0
+        ORDER BY article_id
+    </select>
+
+    <select id="listScoresByArticleId" resultMap="score">
+        SELECT SUM(score_number) score,COUNT(score_number) score_count,score_article_id articleId
+        FROM score
+        WHERE score_article_id IN
+        (
+        <foreach collection="articles" item="article" separator=",">
+            #{article.id}
+        </foreach>
+        )
+        GROUP BY score_article_id
+        ORDER BY score_article_id
+    </select>
+
+    <select id="searchScoreByArticleId" resultMap="score">
+        SELECT SUM(score_number) score,COUNT(score_number) score_count
+        FROM score
+        WHERE score_article_id = #{articleId}
+    </select>
+
+    <select id="listCollectionsByUserId" resultMap="article">
+        SELECT article_id,article_author_id,article_title,article_content,
+               article_update_time,article_create_time,article_summary,
+               article_thumbnail,article_visible,article_deleted,
+               category.category_name category_name,
+               tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
+               tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
+        FROM article,category,tag WHERE article_id IN(SELECT article_id
+                                                      FROM collection
+                                                      WHERE user_id = #{userId})
+                                    AND article_deleted = 0
+                                    AND category.category_id IN (SELECT category_id
+                                                                 FROM article_category_ref
+                                                                 WHERE article_category_ref.article_id = article.article_id)
+                                    AND tag.tag_id IN (SELECT tag_id
+                                                       FROM article_tag_ref
+                                                       WHERE article_tag_ref.article_id = article.article_id)
+                                    AND article_deleted = 0
+        ORDER BY article_id
+    </select>
+
+    <select id="listViewsByArticleId" resultMap="view">
+        SELECT article_id article_id,SUM(view_count) view_count
+        FROM article_view
+        WHERE article_id IN
+        (
+        <foreach collection="articles" item="article" separator=",">
+            #{article.id}
+        </foreach>
+        )
+        GROUP BY article_id
+        ORDER BY article_id;
+    </select>
+
+    <select id="countArticleByAuthorId" resultType="java.lang.Integer">
+        SELECT COUNT(article_id)
+        FROM article
+        WHERE article_author_id = #{authorId} AND article_deleted = 0
+    </select>
+
+    <select id="countViewsByAuthorId" resultType="java.lang.Integer">
+        SELECT SUM(view_count)
+        FROM article_view
+        WHERE article_id IN (SELECT article_id
+                             FROM article
+                             WHERE article_author_id = #{authorId} AND article_deleted = 0);
+    </select>
 </mapper>

@@ -25,12 +25,25 @@ public class UserInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //System.out.println(request.getHeader("Authorization"));
+
+//        System.out.println(request.getHeader("Authorization"));
 //        if(request.getParameter("userName").equals("abc")){
 //            throw new RuntimeException("test!");
 //        }
-        log.info("URL:"+request.getRequestURI());
-        log.info("token:"+request.getParameter("token"));
+
+        String token = request.getParameter("token");
+        if(token==null){
+            throw new RuntimeException("1");
+        }
+        String[] tokenInfo = token.split(":");
+        if(tokenInfo.length!=2){
+            throw new RuntimeException("1");
+        }
+        String verification = (String) redisTemplate.opsForValue().get(tokenInfo[0]);
+        log.info("token:"+verification);
+        if(verification==null||!verification.equals(token)){
+            throw new RuntimeException("1");
+        }
         return true;
     }
 }

@@ -3,6 +3,8 @@ package org.nwpu.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.nwpu.blog.bean.Article;
+import org.nwpu.blog.bean.Score;
+import org.nwpu.blog.bean.View;
 
 import java.util.List;
 
@@ -93,4 +95,53 @@ public interface ArticleMapper {
      * @return 操作结果
      */
     public boolean updateThumbnail(@Param("thumbnail")String thumbnail,@Param("articleId")Integer articleId);
+
+    /**
+     * 按页查询一个用户发布的所有文章
+     * @param authorId 作者id
+     * @return 查询结果
+     */
+    public List<Article> listArticlesByAuthorId(@Param("authorId") Integer authorId);
+
+    /**
+     * 根据文章id查询评分
+     * @param articles 要查询评分的文章列表
+     * @return
+     */
+    public List<Score> listScoresByArticleId(@Param("articles") List<Article> articles);
+
+    /**
+     * 根据文章id查询指定文章的平均得分
+     * @param articleId 文章id
+     * @return 查询结果
+     */
+    public Score searchScoreByArticleId(@Param("articleId")Integer articleId);
+
+    /**
+     * 查询一个用户的全部收藏文章
+     * @param userId 用户id
+     * @return 查询结果
+     */
+    public List<Article> listCollectionsByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 根据文章id查询文章阅读量
+     * @param articles 文章id列表
+     * @return
+     */
+    public List<View> listViewsByArticleId(@Param("articles") List<Article> articles);
+
+    /**
+     * 查询一个用户发布文章的数目
+     * @param authorId 用户id
+     * @return 文章数目
+     */
+    public Integer countArticleByAuthorId(@Param("authorId")Integer authorId);
+
+    /**
+     * 查询一个作者文章的总阅读量
+     * @param authorId 用户id
+     * @return 文章总阅读量
+     */
+    public Integer countViewsByAuthorId(@Param("authorId")Integer authorId);
 }

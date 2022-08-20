@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.nwpu.blog.bean.User;
 
 import java.util.Date;
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -77,4 +78,33 @@ public interface UserMapper {
      * @return 操作结果
      */
     public boolean updateUser(@Param("user") User user);
+
+    /**
+     * 根据用户id修改用户权限
+     * @param userId 用户id
+     * @param role 用户新权限
+     * @return 操作结果
+     */
+    public boolean setUserRoleById(@Param("userId")Integer userId,@Param("role")String role);
+
+    /**
+     * 根据用户id删除用户
+     * @param userId 用户id
+     * @return 操作结果
+     */
+    public boolean deleteUserById(@Param("userId")Integer userId);
+
+    /**
+     * 按页查询用户
+     * @param start 开始查询的行数
+     * @param pageSize 一页的大小
+     * @return 查询结果
+     */
+    public List<User> listUsers(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
+
+    /**
+     * 获取用户总数
+     * @return 用户总数
+     */
+    public Integer getUsersSize();
 }

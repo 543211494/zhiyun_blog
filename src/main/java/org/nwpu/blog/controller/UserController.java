@@ -45,7 +45,7 @@ public class UserController {
     public String uploadAvatar(@RequestParam("avatar") MultipartFile file, @RequestParam("token")String token,
                                HttpSession session) {
         Response response = new Response<Object>();
-        Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
+        Integer userId = User.getIdByToken(token);
         /* 只允许上传xxx.png或xxx.jpg格式的文件作为头像 */
         String[] fileinfo = file.getOriginalFilename().split("\\.");
         if(fileinfo[0].isEmpty()){
@@ -103,7 +103,7 @@ public class UserController {
     public String updateUser(@RequestParam("nickname")String nickname,@RequestParam("email")String email,
                              @RequestParam("password")String password,@RequestParam("token")String token){
         Response response = new Response<Object>();
-        Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
+        Integer userId = User.getIdByToken(token);
         if(nickname.isEmpty()||email.isEmpty()||password.isEmpty()){
             response.setCode(400);
             response.setMessage("参数不能为空!");

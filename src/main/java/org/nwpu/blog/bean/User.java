@@ -16,17 +16,17 @@ public class User {
     /**
      * 用户权限————超级管理员
      */
-    private static final String SUPER = "SUPER";
+    public static final String SUPER = "SUPER";
 
     /**
      * 用户权限————管理员
      */
-    private static final String ADMIN = "ADMIN";
+    public static final String ADMIN = "ADMIN";
 
     /**
      * 用户权限————普通用户
      */
-    private static final String USER = "USER";
+    public static final String USER = "USER";
 
     /**
      * 默认用户头像路径
@@ -84,6 +84,15 @@ public class User {
      * 用户权限
      */
     private String role;
+
+    /**
+     * 根据token获取用户id
+     * @param token
+     * @return
+     */
+    public static Integer getIdByToken(String token){
+        return Integer.parseInt(token.split(":")[0].split("-")[2]);
+    }
 
     public User(Integer id, String userName, String password, String nickname, String email, String avatar, Date registerTime, Date lastLoginTime, boolean isDeleted, String role) {
         this.id = id;

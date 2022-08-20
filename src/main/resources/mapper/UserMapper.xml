@@ -75,4 +75,24 @@
         </set>
         WHERE user_id = #{user.id} AND user_deleted = 0
     </update>
+
+    <update id="setUserRoleById">
+        UPDATE user SET user_role = #{role} WHERE user_id = #{userId}
+    </update>
+
+    <update id="deleteUserById">
+        UPDATE user SET user_deleted = 1 WHERE user_id = #{userId}
+    </update>
+
+    <select id="listUsers" resultMap="user">
+        SELECT user_id,user_name,user_nickname,user_email,user_avatar,
+               user_register_time,user_lastLogin_time,user_role
+        FROM user WHERE user_deleted = 0
+        ORDER BY user_id
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="getUsersSize" resultType="java.lang.Integer">
+        SELECT COUNT(user_id) FROM user
+    </select>
 </mapper>

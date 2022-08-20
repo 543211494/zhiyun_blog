@@ -1,13 +1,12 @@
 package org.nwpu.blog.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.nwpu.blog.bean.Article;
-import org.nwpu.blog.bean.Category;
-import org.nwpu.blog.bean.Tag;
+import org.nwpu.blog.bean.*;
 import org.nwpu.blog.result.Response;
 import org.nwpu.blog.service.ArticleService;
 import org.nwpu.blog.service.CategoryService;
 import org.nwpu.blog.service.TagService;
+import org.nwpu.blog.service.UserService;
 import org.nwpu.blog.util.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,10 +21,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -41,6 +37,9 @@ public class ArticleController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private UserService userService;
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -234,7 +233,7 @@ public class ArticleController {
     public String uploadThumbnail(@RequestParam("thumbnail")MultipartFile file,@RequestParam("articleId")String id,
                                   @RequestParam("token")String token,HttpSession session){
         Response response = new Response<Object>();
-        Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
+        Integer userId = User.getIdByToken(token);
         Integer articleId = null;
         try{
             articleId = Integer.parseInt(id);
@@ -292,6 +291,12 @@ public class ArticleController {
         return JSON.toString(response);
     }
 
+    /**
+     * 根据文章id获取文章详情
+     * @param id
+     * @param token
+     * @return
+     */
     @RequestMapping(value = "/user/article/getArticleById",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String getArticleById(@RequestParam("articleId")String id,@RequestParam("token")String token){
@@ -312,22 +317,215 @@ public class ArticleController {
         }
         response.setCode(200);
         articleService.addArticleView(articleId);
+        Double avgScore = articleService.searchAvgScoreByArticleId(articleId);
+        if(avgScore==null){
+            avgScore = 0.0;
+        }
         Map<String,Object> data = new HashMap<String,Object>();
         data.put("articleId",article.getId());
         data.put("authorId",article.getAuthorId());
         data.put("title",article.getTitle());
         data.put("content",article.getContent());
+        data.put("summary",article.getSummary());
         data.put("createTime",simpleDateFormat.format(article.getCreateTime()));
         data.put("updateTime",simpleDateFormat.format(article.getUpdateTime()));
         data.put("category",article.getCategory());
         data.put("tags",article.getTags());
         data.put("view",articleService.searchArticleViewById(articleId));
+        data.put("score",avgScore);
         response.setData(data);
         response.setMessage("获取文章成功!");
         return JSON.toString(response);
     }
+
     /**
-     * 提取文章照耀
+     * 查看我的发布
+     * @param current 当前页码
+     * @param size 每页的大小
+     * @param token 用户登录令牌
+     * @return
+     */
+    @RequestMapping(value = "/user/article/getArticleByUserId",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getArticleByAuthorId(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size,
+                                       @RequestParam("token")String token){
+        Integer userId = User.getIdByToken(token);
+        Response response = new Response<Object>();
+//        if(userService.getUserById(userId,false)==null){
+//            response.setCode(400);
+//            response.setMessage("用户不存在!");
+//            return JSON.toString(response);
+//        }
+        Integer currentPage = null;
+        Integer pageSize = null;
+        Integer pageNum = null;
+        try{
+            currentPage = Integer.parseInt(current);
+            pageSize = Integer.parseInt(size);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        if(currentPage.intValue()<=0||pageSize.intValue()<=0){
+            response.setCode(400);
+            response.setMessage("参数不能<=0!");
+            return JSON.toString(response);
+        }
+        /* 按页查询文章 */
+        List<Article> articleList = new ArrayList<Article>();
+        pageNum = articleService.listArticlesByAuthorId(userId,currentPage,pageSize,articleList);
+        if(articleList==null){
+            response.setCode(400);
+            response.setMessage("已经超过最后一页!");
+            return JSON.toString(response);
+        }
+        /* 查询文章平均评分和阅读量 */
+        this.setArticlesViewAndScore(articleList);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("articleList",articleList);
+        data.put("currentPage",currentPage);
+        data.put("pageSize",pageSize);
+        data.put("pageNum",pageNum==null?0:pageNum);
+        response.setCode(200);
+        response.setMessage("查询成功!");
+        response.setData(data);
+        return JSON.toString(response);
+    }
+
+    /**
+     * 查询我的收藏
+     * @param current 当前页码
+     * @param size 每页的大小
+     * @param token 用户登录令牌
+     * @return
+     */
+    @RequestMapping(value = "/user/collection/getAllCollections",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getCollections(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size,
+                                 @RequestParam("token")String token){
+        Response response = new Response<Object>();
+        Integer userId = User.getIdByToken(token);
+        Integer currentPage = null;
+        Integer pageSize = null;
+        Integer pageNum = null;
+        try{
+            currentPage = Integer.parseInt(current);
+            pageSize = Integer.parseInt(size);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        if(currentPage.intValue()<=0||pageSize.intValue()<=0){
+            response.setCode(400);
+            response.setMessage("参数不能<=0!");
+            return JSON.toString(response);
+        }
+        /* 按页查询文章 */
+        List<Article> articleList = new ArrayList<Article>();
+        pageNum = articleService.listCollectionsByUserId(userId,currentPage,pageSize,articleList);
+        if(articleList==null){
+            response.setCode(400);
+            response.setMessage("已经超过最后一页!");
+            return JSON.toString(response);
+        }
+        /* 查询文章平均评分和阅读量 */
+        this.setArticlesViewAndScore(articleList);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("articleList",articleList);
+        data.put("currentPage",currentPage);
+        data.put("pageSize",pageSize);
+        data.put("pageNum",pageNum==null?0:pageNum);
+        response.setCode(200);
+        response.setMessage("查询成功!");
+        response.setData(data);
+        return JSON.toString(response);
+    }
+
+    @RequestMapping(value = "/user/user/getUserInfo",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getUserPage(@RequestParam("userId")String id,@RequestParam("currentPage")String current,
+                              @RequestParam("pageSize")String size,@RequestParam("token")String token){
+        Response response = new Response<Object>();
+        Integer userId = null;
+        Integer currentPage = null;
+        Integer pageSize = null;
+        Integer pageNum = null;
+        try{
+            userId = Integer.parseInt(id);
+            currentPage = Integer.parseInt(current);
+            pageSize= Integer.parseInt(size);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        User user = userService.getUserById(userId,false);
+        if(user==null){
+            response.setCode(310);
+            response.setMessage("用户不存在!");
+            return JSON.toString(response);
+        }
+        user.setPassword("");
+        /* 按页查询文章 */
+        List<Article> articleList = new ArrayList<Article>();
+        pageNum = articleService.listArticlesByAuthorId(userId,currentPage,pageSize,articleList);
+        if(articleList==null){
+            response.setCode(400);
+            response.setMessage("已经超过最后一页!");
+            return JSON.toString(response);
+        }
+        /* 查询文章平均评分和阅读量 */
+        this.setArticlesViewAndScore(articleList);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("user",user);
+        data.put("articleList",articleList);
+        data.put("articleNum",articleService.searchArticleNumByAuthorId(userId));
+        data.put("articleViewCount",articleService.searchArticleNumByAuthorId(userId));
+        data.put("currentPage",currentPage);
+        data.put("pageSize",pageSize);
+        data.put("pageNum",pageNum==null?0:pageNum);
+        response.setCode(200);
+        response.setMessage("查询成功!");
+        response.setData(data);
+        return JSON.toString(response);
+    }
+
+    /**
+     * 查询并设置文章的阅读量和平均评分
+     * @param articleList
+     */
+    public void setArticlesViewAndScore(List<Article> articleList){
+        /* 查询文章平均评分和阅读量 */
+        if(articleList!=null&&articleList.size()!=0){
+            List<Score> scoreList = articleService.listScoresByArticle(articleList);
+            List<View> viewList = articleService.listViewsByArticleId(articleList);
+            if(scoreList!=null){
+                for(int i = 0;i<articleList.size();i++){
+                    for(int j = 0;j<scoreList.size();j++){
+                        if(articleList.get(i).getId().equals(scoreList.get(j).getArticleId())){
+                            articleList.get(i).setScore(scoreList.get(j).getScore().doubleValue()/scoreList.get(j).getCount().doubleValue());
+                            break;
+                        }
+                    }
+                }
+            }
+            if(viewList!=null){
+                for(int i = 0;i<articleList.size();i++){
+                    for(int j = 0;j<viewList.size();j++){
+                        if(articleList.get(i).getId().equals(viewList.get(j).getArticleId())){
+                            articleList.get(i).setView(viewList.get(j).getCount());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 提取文章摘要
      * @param content 文章内容
      * @return 文章摘要
      */

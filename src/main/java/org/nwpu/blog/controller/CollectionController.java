@@ -2,6 +2,7 @@ package org.nwpu.blog.controller;
 
 import org.nwpu.blog.bean.Article;
 import org.nwpu.blog.bean.ArticleCollection;
+import org.nwpu.blog.bean.User;
 import org.nwpu.blog.result.Response;
 import org.nwpu.blog.service.ArticleService;
 import org.nwpu.blog.service.CollectionService;
@@ -46,7 +47,7 @@ public class CollectionController {
             return JSON.toString(response);
         }
         /* 通过token获取用户id */
-        Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
+        Integer userId = User.getIdByToken(token);
         if(articleService.getArticleById(articleId,true,true,false)==null){
             response.setCode(352);
             response.setMessage("文章不存在!");

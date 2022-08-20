@@ -1,12 +1,15 @@
 package org.nwpu.blog.service.impl;
 
 import org.nwpu.blog.bean.Article;
+import org.nwpu.blog.bean.Score;
+import org.nwpu.blog.bean.View;
 import org.nwpu.blog.mapper.ArticleMapper;
 import org.nwpu.blog.mapper.ViewMapper;
 import org.nwpu.blog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -154,5 +157,71 @@ public class ArticleServiceImpl implements ArticleService {
             return 0;
         }
         return count==null?0:count;
+    }
+
+    @Override
+    public Integer listArticlesByAuthorId(Integer authorId, Integer currentPage, Integer pageSize,List<Article> result) {
+        int start = (currentPage.intValue()-1)*pageSize;
+        int pageNum;
+        List<Article> articles = articleMapper.listArticlesByAuthorId(authorId);
+        if(start>=articles.size()){
+            result = null;
+            return null;
+        }else{
+            int end = start+pageSize;
+            pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
+            for(int i = start;i<end&&i<articles.size();i++){
+                result.add(articles.get(i));
+            }
+            return pageNum;
+        }
+    }
+
+    @Override
+    public List<Score> listScoresByArticle(List<Article> articles) {
+        return articleMapper.listScoresByArticleId(articles);
+    }
+
+    @Override
+    public Double searchAvgScoreByArticleId(Integer articleId) {
+        Score score = articleMapper.searchScoreByArticleId(articleId);
+        if(score.getArticleId()==null){
+            return null;
+        }else{
+            return score.getScore().doubleValue()/score.getCount().doubleValue();
+        }
+    }
+
+    @Override
+    public Integer listCollectionsByUserId(Integer userId, Integer currentPage, Integer pageSize, List<Article> result) {
+        int start = (currentPage.intValue()-1)*pageSize;
+        int pageNum;
+        List<Article> articles = articleMapper.listCollectionsByUserId(userId);
+        if(start>=articles.size()){
+            result = null;
+            return null;
+        }else{
+            int end = start+pageSize;
+            pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
+            for(int i = start;i<end&&i<articles.size();i++){
+                result.add(articles.get(i));
+            }
+            return pageNum;
+        }
+    }
+
+    @Override
+    public List<View> listViewsByArticleId(List<Article> articles) {
+        return articleMapper.listViewsByArticleId(articles);
+    }
+
+    @Override
+    public Integer searchArticleNumByAuthorId(Integer authorId) {
+        return articleMapper.countArticleByAuthorId(authorId);
+    }
+
+    @Override
+    public Integer searchViewsByAuthorId(Integer authorId) {
+        return articleMapper.countViewsByAuthorId(authorId);
     }
 }

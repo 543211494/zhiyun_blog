@@ -1,5 +1,6 @@
 package org.nwpu.blog.controller;
 
+import org.nwpu.blog.bean.User;
 import org.nwpu.blog.result.Response;
 import org.nwpu.blog.service.ArticleService;
 import org.nwpu.blog.util.JSON;
@@ -48,7 +49,7 @@ public class ScoreController {
             response.setMessage("文章不存在!");
             return JSON.toString(response);
         }else if(0<=score.intValue()&&score.intValue()<=5){
-            Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
+            Integer userId = User.getIdByToken(token);
             articleService.scoreArticle(userId,articleId,score);
             response.setCode(200);
             response.setMessage("评分成功!");
