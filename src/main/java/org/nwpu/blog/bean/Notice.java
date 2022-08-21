@@ -61,6 +61,19 @@ public class Notice {
     }
 
     public Notice() {
+        Date date = new Date();
+        this.updateTime = date;
+        this.createTime = date;
+        this.isDeleted = false;
+    }
 
+    public Notice(Integer publisherId, String content, Integer order) {
+        Date date = new Date();
+        this.publisherId = publisherId;
+        this.content = content;
+        this.order = order;
+        this.updateTime = date;
+        this.createTime = date;
+        this.isDeleted = false;
     }
 }

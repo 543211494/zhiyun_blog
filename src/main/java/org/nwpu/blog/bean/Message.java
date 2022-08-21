@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author lzy
@@ -43,6 +44,11 @@ public class Message {
      * 是否删除
      */
     private boolean isDeleted;
+
+    /**
+     * 子评论
+     */
+    private List<Message> child;
 
     public Message(Integer id, Integer pid, Integer authorId, String content, Date createTime, boolean isDeleted) {
         this.id = id;

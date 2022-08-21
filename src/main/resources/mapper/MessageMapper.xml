@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.MessageMapper">
+    <resultMap id="message" type="org.nwpu.blog.bean.Message">
+        <id property="id" column="message_id" jdbcType="INTEGER"></id>
+        <result property="pid" column="message_pid" jdbcType="INTEGER"></result>
+        <result property="authorId" column="mesaage_author_id" jdbcType="INTEGER"></result>
+        <result property="content" column="message_content" jdbcType="VARCHAR"></result>
+        <result property="createTime" column="message_create_time" jdbcType="TIMESTAMP"></result>
+        <result property="isDeleted" column="message_deleted" jdbcType="INTEGER"></result>
+    </resultMap>
+</mapper>

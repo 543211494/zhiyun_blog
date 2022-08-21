@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.NoticeMapper">
+
+    <resultMap id="notice" type="org.nwpu.blog.bean.Notice">
+        <id property="id" column="notice_id" jdbcType="INTEGER"></id>
+        <result property="publisherId" column="notice_publisher_id" jdbcType="INTEGER"></result>
+        <result property="content" column="notice_content" jdbcType="VARCHAR"></result>
+        <result property="order" column="notice_order" jdbcType="INTEGER"></result>
+        <result property="updateTime" column="notice_create_time" jdbcType="TIMESTAMP"></result>
+        <result property="createTime" column="notice_update_time" jdbcType="TIMESTAMP"></result>
+        <result property="isDeleted" column="notice_deleted" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <insert id="insertNotice">
+        INSERT INTO notice(notice_publisher_id,notice_content,notice_order,
+                           notice_create_time,notice_update_time,notice_deleted)
+        VALUES (#{notice.publisherId},#{notice.content},#{notice.order},
+                #{notice.updateTime},#{notice.createTime},#{notice.isDeleted})
+    </insert>
+
+    <update id="updateNoticeById">
+        UPDATE notice SET notice_content = #{notice.content},
+                          notice_order = #{notice.order},
+                          notice_publisher_id = #{notice.publisherId},
+                          notice_update_time = now()
+        WHERE notice_id = #{notice.id}
+    </update>
+
+    <update id="deleteNotcieById">
+        UPDATE notice SET notice_deleted = 1
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <select id="getNotices" resultMap="notice">
+        SELECT notice_id,notice_publisher_id,notice_content,
+               notice_order,notice_create_time,notice_update_time,notice_deleted
+        FROM notice
+        WHERE notice_deleted = 0 <if test="content!=null">AND notice_content LIKE '%${content}%'</if>
+        ORDER BY notice_order DESC ,notice_create_time
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="countNotice" resultType="java.lang.Integer">
+        SELECT COUNT(notice_id) FROM notice
+        WHERE notice_deleted = 0 <if test="content!=null">AND notice_content LIKE '%${content}%'</if>
+    </select>
+
+</mapper>

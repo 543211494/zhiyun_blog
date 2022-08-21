@@ -130,7 +130,7 @@
                                                        WHERE article_tag_ref.article_id = article.article_id)
                                     AND article_deleted = 0
                                     AND article_visible = 1
-        ORDER BY article_id
+        ORDER BY article_id DESC
     </select>
 
     <select id="listScoresByArticleId" resultMap="score">
@@ -143,7 +143,7 @@
         </foreach>
         )
         GROUP BY score_article_id
-        ORDER BY score_article_id
+        ORDER BY score_article_id DESC
     </select>
 
     <select id="searchScoreByArticleId" resultMap="score">
@@ -170,7 +170,7 @@
                                                        WHERE article_tag_ref.article_id = article.article_id)
                                     AND article_deleted = 0
                                     AND article_visible = 1
-        ORDER BY article_id
+        ORDER BY article_id DESC
     </select>
 
     <select id="listViewsByArticleId" resultMap="view">
@@ -182,7 +182,7 @@
             #{article.id}
         </foreach>
         )
-        GROUP BY article_id
+        GROUP BY article_id DESC
         ORDER BY article_id;
     </select>
 
@@ -220,7 +220,7 @@
           AND article_deleted = 0
           <if test="isPassed">AND article_visible = 1</if>
           <if test="!isPassed">AND article_visible = 0</if>
-        ORDER BY article_id;
+        ORDER BY article_id DESC
     </select>
 
     <select id="listArticlesByTag" resultMap="article">
@@ -244,7 +244,7 @@
                              WHERE article_tag_ref.article_id = article.article_id)
           AND article_deleted = 0
           <if test="isPassed">AND article_visible = 1</if>
-        ORDER BY article_id;
+        ORDER BY article_id DESC
     </select>
 
     <select id="listArticleByTitle" resultMap="article">
@@ -265,6 +265,6 @@
                                                        WHERE article_tag_ref.article_id = article.article_id)
                                     AND article_deleted = 0
                                     <if test="isPassed">AND article_visible = 1</if>
-        ORDER BY article_id;
+        ORDER BY article_id DESC
     </select>
 </mapper>
