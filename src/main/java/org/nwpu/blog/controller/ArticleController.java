@@ -293,8 +293,8 @@ public class ArticleController {
 
     /**
      * 根据文章id获取文章详情
-     * @param id
-     * @param token
+     * @param id 文章id
+     * @param token 用户登录令牌
      * @return
      */
     @RequestMapping(value = "/user/article/getArticleById",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
@@ -375,18 +375,13 @@ public class ArticleController {
         /* 按页查询文章 */
         List<Article> articleList = new ArrayList<Article>();
         pageNum = articleService.listArticlesByAuthorId(userId,currentPage,pageSize,articleList);
-        if(articleList==null){
-            response.setCode(400);
-            response.setMessage("已经超过最后一页!");
-            return JSON.toString(response);
-        }
         /* 查询文章平均评分和阅读量 */
         this.setArticlesViewAndScore(articleList);
         Map<String,Object> data = new HashMap<String,Object>();
         data.put("articleList",articleList);
         data.put("currentPage",currentPage);
         data.put("pageSize",pageSize);
-        data.put("pageNum",pageNum==null?0:pageNum);
+        data.put("pageNum",pageNum);
         response.setCode(200);
         response.setMessage("查询成功!");
         response.setData(data);
@@ -425,24 +420,27 @@ public class ArticleController {
         /* 按页查询文章 */
         List<Article> articleList = new ArrayList<Article>();
         pageNum = articleService.listCollectionsByUserId(userId,currentPage,pageSize,articleList);
-        if(articleList==null){
-            response.setCode(400);
-            response.setMessage("已经超过最后一页!");
-            return JSON.toString(response);
-        }
         /* 查询文章平均评分和阅读量 */
         this.setArticlesViewAndScore(articleList);
         Map<String,Object> data = new HashMap<String,Object>();
         data.put("articleList",articleList);
         data.put("currentPage",currentPage);
         data.put("pageSize",pageSize);
-        data.put("pageNum",pageNum==null?0:pageNum);
+        data.put("pageNum",pageNum);
         response.setCode(200);
         response.setMessage("查询成功!");
         response.setData(data);
         return JSON.toString(response);
     }
 
+    /**
+     * 查看个人主页
+     * @param id 用户id
+     * @param current 当前页码
+     * @param size 每一页的大小
+     * @param token 用户登录令牌
+     * @return
+     */
     @RequestMapping(value = "/user/user/getUserInfo",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String getUserPage(@RequestParam("userId")String id,@RequestParam("currentPage")String current,
@@ -461,6 +459,11 @@ public class ArticleController {
             response.setMessage("参数格式错误!");
             return JSON.toString(response);
         }
+        if(currentPage.intValue()<=0||pageSize.intValue()<=0){
+            response.setCode(400);
+            response.setMessage("参数不能<=0!");
+            return JSON.toString(response);
+        }
         User user = userService.getUserById(userId,false);
         if(user==null){
             response.setCode(310);
@@ -471,11 +474,6 @@ public class ArticleController {
         /* 按页查询文章 */
         List<Article> articleList = new ArrayList<Article>();
         pageNum = articleService.listArticlesByAuthorId(userId,currentPage,pageSize,articleList);
-        if(articleList==null){
-            response.setCode(400);
-            response.setMessage("已经超过最后一页!");
-            return JSON.toString(response);
-        }
         /* 查询文章平均评分和阅读量 */
         this.setArticlesViewAndScore(articleList);
         Map<String,Object> data = new HashMap<String,Object>();
@@ -485,12 +483,163 @@ public class ArticleController {
         data.put("articleViewCount",articleService.searchArticleNumByAuthorId(userId));
         data.put("currentPage",currentPage);
         data.put("pageSize",pageSize);
-        data.put("pageNum",pageNum==null?0:pageNum);
+        data.put("pageNum",pageNum);
         response.setCode(200);
         response.setMessage("查询成功!");
         response.setData(data);
         return JSON.toString(response);
     }
+
+    /**
+     * 根据标签获取文章列表
+     * @param current 当前页
+     * @param size 每一页的大小
+     * @param category 分类
+     * @param token 用户登录令牌
+     * @return
+     */
+    @RequestMapping(value = {"/user/article/getArticleByCategory","/admin/article/manageArticles"},method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getArticlesByCategory(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size,
+                                        @RequestParam(value = "category",required = false, defaultValue = "")String category,
+                                        @RequestParam(value = "isPassed",required = false,defaultValue = "1")String pass,
+                                        @RequestParam("token")String token){
+        Response response = new Response<Object>();
+        Integer currentPage = null;
+        Integer pageSize = null;
+        Integer pageNum;
+        Integer isPassed;
+        try{
+            currentPage = Integer.parseInt(current);
+            pageSize= Integer.parseInt(size);
+            isPassed = Integer.parseInt(pass);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        if(currentPage.intValue()<=0||pageSize.intValue()<=0){
+            response.setCode(400);
+            response.setMessage("参数不能<=0!");
+            return JSON.toString(response);
+        }
+        if(category.isEmpty()){
+            category = null;
+        }
+        /* 按页查询文章 */
+        List<Article> articleList = new ArrayList<Article>();
+        pageNum = articleService.listArticlesByCategory(category,currentPage,pageSize,articleList,isPassed.intValue()==1);
+        /* 查询文章平均评分和阅读量 */
+        this.setArticlesViewAndScore(articleList);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("articleList",articleList);
+        data.put("currentPage",currentPage);
+        data.put("pageSize",pageSize);
+        data.put("pageNum",pageNum);
+        response.setCode(200);
+        response.setMessage("查询成功!");
+        response.setData(data);
+        return JSON.toString(response);
+    }
+
+    /**
+     * 根据文章标签查询文章
+     * @param current 当前页码
+     * @param size 一页的大小
+     * @param tag 文章标签
+     * @param token 用户登录令牌
+     * @return
+     */
+    @RequestMapping(value = "/user/article/getArticlesByTag",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getArticleByCategory(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size,
+                                       @RequestParam(value = "tag",required = false, defaultValue = "")String tag,
+                                       @RequestParam("token")String token){
+        Response response = new Response<Object>();
+        Integer currentPage = null;
+        Integer pageSize = null;
+        Integer pageNum;
+        try{
+            currentPage = Integer.parseInt(current);
+            pageSize= Integer.parseInt(size);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        if(currentPage.intValue()<=0||pageSize.intValue()<=0){
+            response.setCode(400);
+            response.setMessage("参数不能<=0!");
+            return JSON.toString(response);
+        }
+        if(tag.isEmpty()){
+            tag = null;
+        }
+        /* 按页查询文章 */
+        List<Article> articleList = new ArrayList<Article>();
+        pageNum = articleService.listArticlesByTag(tag,currentPage,pageSize,articleList,true);
+        /* 查询文章平均评分和阅读量 */
+        this.setArticlesViewAndScore(articleList);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("articleList",articleList);
+        data.put("currentPage",currentPage);
+        data.put("pageSize",pageSize);
+        data.put("pageNum",pageNum);
+        response.setCode(200);
+        response.setMessage("查询成功!");
+        response.setData(data);
+        return JSON.toString(response);
+    }
+
+    /**
+     * 根据标题查询文章
+     * @param current 当前页码
+     * @param size 每一页的大小
+     * @param title 文章标题
+     * @param token 用户登录令牌
+     * @return
+     */
+    @RequestMapping(value = "/user/article/getArticlesByTitle",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String getArticlesByTitle(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size,
+                                       @RequestParam(value = "title",required = false, defaultValue = "")String title,
+                                       @RequestParam("token")String token){
+        Response response = new Response<Object>();
+        Integer currentPage = null;
+        Integer pageSize = null;
+        Integer pageNum;
+        try{
+            currentPage = Integer.parseInt(current);
+            pageSize= Integer.parseInt(size);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("参数格式错误!");
+            return JSON.toString(response);
+        }
+        if(currentPage.intValue()<=0||pageSize.intValue()<=0){
+            response.setCode(400);
+            response.setMessage("参数不能<=0!");
+            return JSON.toString(response);
+        }
+        if(title.isEmpty()){
+            title = null;
+        }
+        /* 按页查询文章 */
+        List<Article> articleList = new ArrayList<Article>();
+        pageNum = articleService.listArticlesByTitle(title,currentPage,pageSize,articleList,true);
+        /* 查询文章平均评分和阅读量 */
+        this.setArticlesViewAndScore(articleList);
+        Map<String,Object> data = new HashMap<String,Object>();
+        data.put("articleList",articleList);
+        data.put("currentPage",currentPage);
+        data.put("pageSize",pageSize);
+        data.put("pageNum",pageNum);
+        response.setCode(200);
+        response.setMessage("查询成功!");
+        response.setData(data);
+        return JSON.toString(response);
+    }
+
 
     /**
      * 查询并设置文章的阅读量和平均评分

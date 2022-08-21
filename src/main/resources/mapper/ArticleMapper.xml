@@ -92,7 +92,6 @@
                                     WHERE article_id = #{articleId}) AND tag.tag_id IN(SELECT tag_id
                                                                                        FROM article_tag_ref
                                                                                        WHERE article_id = #{articleId})
-                                    AND article_deleted = 0
         </if>
     </select>
 
@@ -122,7 +121,7 @@
                category.category_name category_name,
                tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
                tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
-        FROM article,category,tag WHERE article_author_id = #{authorId} AND article_deleted = 0
+        FROM article,category,tag WHERE article_author_id = #{authorId}
                                     AND category.category_id IN (SELECT category_id
                                                                  FROM article_category_ref
                                                                  WHERE article_category_ref.article_id = article.article_id)
@@ -130,6 +129,7 @@
                                                        FROM article_tag_ref
                                                        WHERE article_tag_ref.article_id = article.article_id)
                                     AND article_deleted = 0
+                                    AND article_visible = 1
         ORDER BY article_id
     </select>
 
@@ -162,7 +162,6 @@
         FROM article,category,tag WHERE article_id IN(SELECT article_id
                                                       FROM collection
                                                       WHERE user_id = #{userId})
-                                    AND article_deleted = 0
                                     AND category.category_id IN (SELECT category_id
                                                                  FROM article_category_ref
                                                                  WHERE article_category_ref.article_id = article.article_id)
@@ -170,6 +169,7 @@
                                                        FROM article_tag_ref
                                                        WHERE article_tag_ref.article_id = article.article_id)
                                     AND article_deleted = 0
+                                    AND article_visible = 1
         ORDER BY article_id
     </select>
 
@@ -189,7 +189,7 @@
     <select id="countArticleByAuthorId" resultType="java.lang.Integer">
         SELECT COUNT(article_id)
         FROM article
-        WHERE article_author_id = #{authorId} AND article_deleted = 0
+        WHERE article_author_id = #{authorId} AND article_deleted = 0 AND article_visible = 1
     </select>
 
     <select id="countViewsByAuthorId" resultType="java.lang.Integer">
@@ -198,5 +198,73 @@
         WHERE article_id IN (SELECT article_id
                              FROM article
                              WHERE article_author_id = #{authorId} AND article_deleted = 0);
+    </select>
+
+    <select id="listArticlesByCategory" resultMap="article">
+        SELECT article_id,article_author_id,article_title,article_content,
+               article_update_time,article_create_time,article_summary,
+               article_thumbnail,article_visible,article_deleted,
+               category.category_name category_name,
+               tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
+               tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
+        FROM article,category,tag,(SELECT category_id
+                                   FROM category
+                                   <if test="category!=null">WHERE category_name LIKE '%${category}%'</if>) AS temp
+        WHERE article_id IN (SELECT article_id
+                             FROM article_category_ref
+                             WHERE category_id = temp.category_id)
+          AND category.category_id = temp.category_id
+          AND tag.tag_id IN (SELECT tag_id
+                             FROM article_tag_ref
+                             WHERE article_tag_ref.article_id = article.article_id)
+          AND article_deleted = 0
+          <if test="isPassed">AND article_visible = 1</if>
+          <if test="!isPassed">AND article_visible = 0</if>
+        ORDER BY article_id;
+    </select>
+
+    <select id="listArticlesByTag" resultMap="article">
+        SELECT article_id,article_author_id,article_title,article_content,
+               article_update_time,article_create_time,article_summary,
+               article_thumbnail,article_visible,article_deleted,
+               category.category_name category_name,
+               tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
+               tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
+        FROM article,category,tag,(SELECT tag_id
+                                   FROM tag
+                                   <if test="tag!=null">WHERE tag.tag_name LIKE '%${tag}%'</if>) AS temp
+        WHERE article_id IN (SELECT article_id
+                             FROM article_tag_ref
+                             WHERE article_tag_ref.tag_id = temp.tag_id)
+          AND category.category_id IN (SELECT category_id
+                                       FROM article_category_ref
+                                       WHERE article_category_ref.article_id = article.article_id)
+          AND tag.tag_id IN (SELECT tag_id
+                             FROM article_tag_ref
+                             WHERE article_tag_ref.article_id = article.article_id)
+          AND article_deleted = 0
+          <if test="isPassed">AND article_visible = 1</if>
+        ORDER BY article_id;
+    </select>
+
+    <select id="listArticleByTitle" resultMap="article">
+        SELECT article_id,article_author_id,article_title,article_content,
+               article_update_time,article_create_time,article_summary,
+               article_thumbnail,article_visible,article_deleted,
+               category.category_name category_name,
+               tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
+               tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
+        FROM article,category,tag WHERE article_id IN(SELECT article_id
+                                                      FROM article
+                                                      <if test="title!=null">WHERE article_title Like '%${title}%'</if>)
+                                    AND category.category_id IN (SELECT category_id
+                                                                 FROM article_category_ref
+                                                                 WHERE article_category_ref.article_id = article.article_id)
+                                    AND tag.tag_id IN (SELECT tag_id
+                                                       FROM article_tag_ref
+                                                       WHERE article_tag_ref.article_id = article.article_id)
+                                    AND article_deleted = 0
+                                    <if test="isPassed">AND article_visible = 1</if>
+        ORDER BY article_id;
     </select>
 </mapper>

@@ -164,12 +164,11 @@ public class ArticleServiceImpl implements ArticleService {
         int start = (currentPage.intValue()-1)*pageSize;
         int pageNum;
         List<Article> articles = articleMapper.listArticlesByAuthorId(authorId);
+        pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
         if(start>=articles.size()){
-            result = null;
-            return null;
+            return pageNum;
         }else{
             int end = start+pageSize;
-            pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
             for(int i = start;i<end&&i<articles.size();i++){
                 result.add(articles.get(i));
             }
@@ -197,12 +196,11 @@ public class ArticleServiceImpl implements ArticleService {
         int start = (currentPage.intValue()-1)*pageSize;
         int pageNum;
         List<Article> articles = articleMapper.listCollectionsByUserId(userId);
+        pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
         if(start>=articles.size()){
-            result = null;
-            return null;
+            return pageNum;
         }else{
             int end = start+pageSize;
-            pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
             for(int i = start;i<end&&i<articles.size();i++){
                 result.add(articles.get(i));
             }
@@ -223,5 +221,56 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Integer searchViewsByAuthorId(Integer authorId) {
         return articleMapper.countViewsByAuthorId(authorId);
+    }
+
+    @Override
+    public Integer listArticlesByCategory(String category, Integer currentPage, Integer pageSize, List<Article> result, boolean isPassed) {
+        int start = (currentPage.intValue()-1)*pageSize;
+        int pageNum;
+        List<Article> articles = articleMapper.listArticlesByCategory(category,isPassed);
+        pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
+        if(start>=articles.size()){
+            return pageNum;
+        }else{
+            int end = start+pageSize;
+            for(int i = start;i<end&&i<articles.size();i++){
+                result.add(articles.get(i));
+            }
+            return pageNum;
+        }
+    }
+
+    @Override
+    public Integer listArticlesByTag(String tag, Integer currentPage, Integer pageSize, List<Article> result, boolean isPassed) {
+        int start = (currentPage.intValue()-1)*pageSize;
+        int pageNum;
+        List<Article> articles = articleMapper.listArticlesByTag(tag, isPassed);
+        pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
+        if(start>=articles.size()){
+            return pageNum;
+        }else{
+            int end = start+pageSize;
+            for(int i = start;i<end&&i<articles.size();i++){
+                result.add(articles.get(i));
+            }
+            return pageNum;
+        }
+    }
+
+    @Override
+    public Integer listArticlesByTitle(String title, Integer currentPage, Integer pageSize, List<Article> result, boolean isPassed) {
+        int start = (currentPage.intValue()-1)*pageSize;
+        int pageNum;
+        List<Article> articles = articleMapper.listArticleByTitle(title,isPassed);
+        pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
+        if(start>=articles.size()){
+            return pageNum;
+        }else{
+            int end = start+pageSize;
+            for(int i = start;i<end&&i<articles.size();i++){
+                result.add(articles.get(i));
+            }
+            return pageNum;
+        }
     }
 }

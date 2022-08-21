@@ -144,4 +144,28 @@ public interface ArticleMapper {
      * @return 文章总阅读量
      */
     public Integer countViewsByAuthorId(@Param("authorId")Integer authorId);
+
+    /**
+     * 根据分类查询文章
+     * @param category 分类名称，若为null查询全部
+     * @param isPassed true表示查询通过审核的，false表示查询未通过审核的
+     * @return 文章列表
+     */
+    public List<Article> listArticlesByCategory(@Param("category") String category,@Param("isPassed") boolean isPassed);
+
+    /**
+     * 根据标签名称查询文章
+     * @param tag 标签名称，若为null查询全部
+     * @param isPassed true表示查询通过审核的，false表示查询全部
+     * @return 文章列表
+     */
+    public List<Article> listArticlesByTag(@Param("tag")String tag,@Param("isPassed")boolean isPassed);
+
+    /**
+     * 根据文章标题查询文章
+     * @param title 文章标题，若为null查询全部
+     * @param isPassed true表示查询通过审核的，false表示查询全部
+     * @return 文章列表
+     */
+    public List<Article> listArticleByTitle(@Param("title")String title,@Param("isPassed")boolean isPassed);
 }

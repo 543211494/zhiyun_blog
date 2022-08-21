@@ -101,11 +101,11 @@ public class AdminController {
         data.put("pageSize",pageSize);
         data.put("pageNum",userService.getTotalPages(pageSize));
         response.setData(data);
-        if(currentPage.intValue()>pageNum.intValue()){
-            response.setCode(400);
-            response.setMessage("已经超过最后一页!");
-            return JSON.toString(response);
-        }
+//        if(currentPage.intValue()>pageNum.intValue()){
+//            response.setCode(400);
+//            response.setMessage("已经超过最后一页!");
+//            return JSON.toString(response);
+//        }
         response.setCode(200);
         response.setMessage("查询成功!");
         return JSON.toString(response);

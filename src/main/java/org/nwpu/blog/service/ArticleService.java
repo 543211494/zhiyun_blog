@@ -162,4 +162,37 @@ public interface ArticleService {
      * @return 文章总阅读量
      */
     public Integer searchViewsByAuthorId(Integer authorId);
+
+    /**
+     * 根据分类查询文章
+     * @param category 分类名称，若为null则查询全部
+     * @param currentPage 当前页码
+     * @param pageSize 一页的大小
+     * @param result 查询结果
+     * @param isPassed true表示查询通过审核的，false表示查询未通过审核的
+     * @return 总页数
+     */
+    public Integer listArticlesByCategory(String category,Integer currentPage,Integer pageSize,List<Article> result,boolean isPassed);
+
+    /**
+     * 根据标签查询文章
+     * @param tag 标签名称，若为null则查询全部
+     * @param currentPage 当前页码
+     * @param pageSize 一页的大小
+     * @param result 查询结果
+     * @param isPassed true表示查询通过审核的，false表示查询全部
+     * @return 总页数
+     */
+    public Integer listArticlesByTag(String tag,Integer currentPage,Integer pageSize,List<Article> result,boolean isPassed);
+
+    /**
+     * 根据文章标题查询文章
+     * @param title 标签名称，若为null则查询全部
+     * @param currentPage 当前页码
+     * @param pageSize 一页的大小
+     * @param result 查询结果
+     * @param isPassed true表示查询通过审核的，false表示查询全部
+     * @return 总页数
+     */
+    public Integer listArticlesByTitle(String title,Integer currentPage,Integer pageSize,List<Article> result,boolean isPassed);
 }
