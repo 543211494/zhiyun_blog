@@ -30,4 +30,16 @@
         </foreach>
         )
     </select>
+
+    <select id="getTags" resultMap="tag">
+        SELECT tag_id,tag_name,tag_description,tag_create_time,tag_update_time,tag_deleted
+        FROM tag
+        ORDER BY tag_id
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="countTags" resultType="java.lang.Integer">
+        SELECT COUNT(tag_id)
+        FROM tag
+    </select>
 </mapper>

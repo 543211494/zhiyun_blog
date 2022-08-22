@@ -59,6 +59,23 @@ public class Message {
         this.isDeleted = isDeleted;
     }
 
+    public Message(Integer authorId, String content) {
+        Date date = new Date();
+        this.authorId = authorId;
+        this.content = content;
+        this.createTime = date;
+        this.isDeleted = false;
+    }
+
+    public Message(Integer pid, Integer authorId, String content) {
+        Date date = new Date();
+        this.pid = pid;
+        this.authorId = authorId;
+        this.content = content;
+        this.createTime = date;
+        this.isDeleted = false;
+    }
+
     public Message() {
 
     }

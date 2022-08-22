@@ -9,4 +9,61 @@
         <result property="createTime" column="message_create_time" jdbcType="TIMESTAMP"></result>
         <result property="isDeleted" column="message_deleted" jdbcType="INTEGER"></result>
     </resultMap>
+
+    <select id="getMessageById" resultMap="message">
+        SELECT message_id,message_pid,mesaage_author_id,
+               message_content,message_create_time,message_deleted
+        FROM message
+        WHERE message_id = #{messageId} AND message_deleted = 0
+    </select>
+
+    <insert id="insertMessage">
+        INSERT INTO message(message_pid,mesaage_author_id,message_content,message_create_time,message_deleted)
+        VALUES (#{message.pid},#{message.authorId},#{message.content},#{message.createTime},#{message.isDeleted})
+    </insert>
+
+    <select id="searchParentMessages" resultMap="message">
+        SELECT message_id,message_pid,mesaage_author_id,
+               message_content,message_create_time,message_deleted
+        FROM message
+        WHERE message_pid = 0 AND message_deleted = 0
+        ORDER BY message_id DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="getChildMessagesByPid" resultMap="message">
+        SELECT message_id,message_pid,mesaage_author_id,
+               message_content,message_create_time,message_deleted
+        FROM message
+        WHERE message_deleted = 0
+        AND message_pid IN
+        (
+            <foreach collection="messages" item="message" separator=",">
+                #{message.id}
+            </foreach>
+        )
+    </select>
+
+    <select id="countParentMessages" resultType="java.lang.Integer">
+        SELECT COUNT(message_id)
+        FROM message
+        WHERE message_deleted = 0 <if test="isParent">AND message_pid = 0</if>
+    </select>
+
+    <select id="searchParentMessagesReply" resultMap="message">
+        SELECT message_id,message_pid,mesaage_author_id,
+               message_content,message_create_time,message_deleted
+        FROM message
+        WHERE message_deleted = 0 AND message_pid = 0
+        <if test="!hasReply">AND message_id NOT IN (SELECT message_pid FROM message)</if>
+        ORDER BY message_id DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="countMessagesReply" resultType="java.lang.Integer">
+        SELECT COUNT(message_id)
+        FROM message
+        WHERE message_deleted = 0 AND message_pid = 0
+        <if test="!hasReply">AND message_id NOT IN (SELECT message_pid FROM message)</if>
+    </select>
 </mapper>

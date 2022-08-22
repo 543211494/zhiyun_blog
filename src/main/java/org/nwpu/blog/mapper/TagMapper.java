@@ -22,4 +22,18 @@ public interface TagMapper {
      * @return
      */
     public List<Integer> getTagsIdByName(@Param("names") String[] tagNames);
+
+    /**
+     * 按页查询标签
+     * @param start 起始下标
+     * @param pageSize 一页的大小
+     * @return 查询结果
+     */
+    public List<Tag> getTags(@Param("start")Integer start,@Param("pageSize")Integer pageSize);
+
+    /**
+     * 查询当前一共有多少标签
+     * @return
+     */
+    public Integer countTags();
 }

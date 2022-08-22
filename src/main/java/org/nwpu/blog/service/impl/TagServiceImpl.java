@@ -34,4 +34,18 @@ public class TagServiceImpl implements TagService {
             return null;
         }
     }
+
+    @Override
+    public Integer getTags(Integer currentPage, Integer pageSize, List<Tag> result) {
+        int start = (currentPage.intValue()-1)*pageSize.intValue();
+        int total = tagMapper.countTags();
+        int pageNum = (total/pageSize)+(total%pageSize==0?0:1);
+        List<Tag> tags = tagMapper.getTags(start,pageSize);
+        if(tags!=null&&tags.size()!=0){
+            for(int i = 0;i<tags.size();i++){
+                result.add(tags.get(i));
+            }
+        }
+        return pageNum;
+    }
 }
