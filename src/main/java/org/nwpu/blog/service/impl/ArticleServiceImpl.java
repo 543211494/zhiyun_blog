@@ -3,6 +3,7 @@ package org.nwpu.blog.service.impl;
 import org.nwpu.blog.bean.Article;
 import org.nwpu.blog.bean.Score;
 import org.nwpu.blog.bean.View;
+import org.nwpu.blog.bean.ArticleCollection;
 import org.nwpu.blog.mapper.ArticleMapper;
 import org.nwpu.blog.mapper.ViewMapper;
 import org.nwpu.blog.service.ArticleService;
@@ -275,5 +276,15 @@ public class ArticleServiceImpl implements ArticleService {
             }
             return pageNum;
         }
+    }
+
+    @Override
+    public ArticleCollection getCollectionById(Integer userId, Integer articleId) {
+        return articleMapper.searchCollectionById(userId,articleId);
+    }
+
+    @Override
+    public Score getScoreById(Integer userId, Integer articleId) {
+        return articleMapper.searchScoreById(userId,articleId);
     }
 }

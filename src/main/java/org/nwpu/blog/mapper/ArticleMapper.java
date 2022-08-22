@@ -3,6 +3,7 @@ package org.nwpu.blog.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.nwpu.blog.bean.Article;
+import org.nwpu.blog.bean.ArticleCollection;
 import org.nwpu.blog.bean.Score;
 import org.nwpu.blog.bean.View;
 
@@ -189,4 +190,20 @@ public interface ArticleMapper {
      * @return 操作结果
      */
     public boolean deleteTagByArticleId(@Param("articleId")Integer articleId);
+
+    /**
+     * 根据id查询文章收藏
+     * @param userId 用户id
+     * @param articleId 文章id
+     * @return 查询结果
+     */
+    public ArticleCollection searchCollectionById(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
+
+    /**
+     * 根据id查询文章评分
+     * @param userId 用户id
+     * @param articleId 文章id
+     * @return 查询结果
+     */
+    public Score searchScoreById(@Param("userId") Integer userId,@Param("articleId") Integer articleId);
 }

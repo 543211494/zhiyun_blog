@@ -307,6 +307,7 @@ public class ArticleController {
     public String getArticleById(@RequestParam("articleId")String id,@RequestParam("token")String token){
         Response response = new Response<Object>();
         Integer articleId = null;
+        Integer userId = User.getIdByToken(token);
         try{
             articleId = Integer.parseInt(id);
         }catch (Exception e){
@@ -326,6 +327,8 @@ public class ArticleController {
         if(avgScore==null){
             avgScore = 0.0;
         }
+        boolean hasScored = articleService.getScoreById(userId,articleId)!=null;
+        boolean hasCollection = articleService.getCollectionById(userId,articleId)!=null;
         Map<String,Object> data = new HashMap<String,Object>();
         data.put("articleId",article.getId());
         data.put("authorId",article.getAuthorId());
@@ -338,6 +341,8 @@ public class ArticleController {
         data.put("tags",article.getTags());
         data.put("view",articleService.searchArticleViewById(articleId));
         data.put("score",avgScore);
+        data.put("hasScored",hasScored);
+        data.put("hasCollection",hasCollection);
         response.setData(data);
         response.setMessage("获取文章成功!");
         return JSON.toString(response);

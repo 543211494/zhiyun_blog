@@ -38,6 +38,13 @@
         <result property="count" column="view_count"></result>
     </resultMap>
 
+    <!--  文章收藏  -->
+    <resultMap id="collection" type="org.nwpu.blog.bean.ArticleCollection">
+        <id property="userId" column="user_id" jdbcType="INTEGER"></id>
+        <id property="articleId" column="article_id" jdbcType="INTEGER"></id>
+        <result property="createTime" column="collection_create_time" jdbcType="TIMESTAMP"></result>
+    </resultMap>
+
     <!--  插入后返回主键  -->
     <insert id="insertArticle" parameterType="org.nwpu.blog.bean.Article" useGeneratedKeys="true" keyProperty="id" keyColumn="article_id">
         INSERT INTO article(article_author_id,article_title,article_content,
@@ -279,4 +286,16 @@
     <delete id="deleteTagByArticleId">
         DELETE FROM article_tag_ref WHERE article_id = #{articleId}
     </delete>
+
+    <select id="searchCollectionById" resultMap="collection">
+        SELECT user_id,article_id,collection_create_time
+        FROM collection
+        WHERE collection.article_id = #{articleId} AND collection.user_id = #{userId}
+    </select>
+
+    <select id="searchScoreById" resultMap="score">
+        SELECT score_article_id articleId
+        FROM score
+        WHERE score.score_article_id = #{articleId} AND score.score_user_id = #{userId}
+    </select>
 </mapper>

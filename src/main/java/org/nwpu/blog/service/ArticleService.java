@@ -2,9 +2,11 @@ package org.nwpu.blog.service;
 
 import org.apache.ibatis.annotations.Param;
 import org.nwpu.blog.bean.Article;
+import org.nwpu.blog.bean.ArticleCollection;
 import org.nwpu.blog.bean.Score;
 import org.nwpu.blog.bean.View;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ArticleService {
@@ -195,4 +197,20 @@ public interface ArticleService {
      * @return 总页数
      */
     public Integer listArticlesByTitle(String title,Integer currentPage,Integer pageSize,List<Article> result,boolean isPassed);
+
+    /**
+     * 根据id查询文章收藏
+     * @param userId 用户id
+     * @param articleId 文章id
+     * @return 查询结果
+     */
+    public ArticleCollection getCollectionById(Integer userId, Integer articleId);
+
+    /**
+     * 根据id查询文章评分
+     * @param userId 用户id
+     * @param articleId 文章id
+     * @return 查询结果
+     */
+    public Score getScoreById(Integer userId,Integer articleId);
 }
