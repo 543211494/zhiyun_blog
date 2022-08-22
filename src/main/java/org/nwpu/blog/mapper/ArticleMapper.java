@@ -168,4 +168,25 @@ public interface ArticleMapper {
      * @return 文章列表
      */
     public List<Article> listArticleByTitle(@Param("title")String title,@Param("isPassed")boolean isPassed);
+
+    /**
+     * 跟据文章id删除分类(关联表)
+     * @param articleId 文章id
+     * @return 操作结果
+     */
+    public boolean deleteCategoryByArticleId(@Param("articleId")Integer articleId);
+
+    /**
+     * 跟据文章id删除收藏(关联表)
+     * @param articleId 文章id
+     * @return 操作结果
+     */
+    public boolean deleteCollectionByArticleId(@Param("articleId")Integer articleId);
+
+    /**
+     * 跟据文章id删除标签(关联表)
+     * @param articleId 文章id
+     * @return 操作结果
+     */
+    public boolean deleteTagByArticleId(@Param("articleId")Integer articleId);
 }

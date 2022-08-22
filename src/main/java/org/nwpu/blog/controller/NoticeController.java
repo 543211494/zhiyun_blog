@@ -17,6 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 公告控制器类
+ * @author lzy
+ * @date 2022/8/20
+ */
 @Controller
 public class NoticeController {
 

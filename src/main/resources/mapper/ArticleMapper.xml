@@ -182,8 +182,8 @@
             #{article.id}
         </foreach>
         )
-        GROUP BY article_id DESC
-        ORDER BY article_id;
+        GROUP BY article_id
+        ORDER BY article_id DESC;
     </select>
 
     <select id="countArticleByAuthorId" resultType="java.lang.Integer">
@@ -267,4 +267,16 @@
                                     <if test="isPassed">AND article_visible = 1</if>
         ORDER BY article_id DESC
     </select>
+
+    <delete id="deleteCategoryByArticleId">
+        DELETE FROM article_category_ref WHERE article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteCollectionByArticleId">
+        DELETE FROM collection WHERE article_id = #{articleId}
+    </delete>
+
+    <delete id="deleteTagByArticleId">
+        DELETE FROM article_tag_ref WHERE article_id = #{articleId}
+    </delete>
 </mapper>

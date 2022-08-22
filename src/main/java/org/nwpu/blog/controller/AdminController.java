@@ -15,12 +15,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 管理员控制器类
+ * @author lzy
+ * @date 2022/8/17
+ */
 @Controller
 public class AdminController {
 
     @Autowired
     private UserService userService;
 
+    /**
+     * 修改用户权限
+     * @param token 用户登录令牌
+     * @param role 用户角色
+     * @param id 要修改的用户的id
+     * @return
+     */
     @RequestMapping(value = "/admin/user/updateUserRole",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String setUserRole(@RequestParam("token")String token, @RequestParam("role")String role,
@@ -50,6 +62,12 @@ public class AdminController {
         return JSON.toString(response);
     }
 
+    /**
+     * 删除用户
+     * @param id 用户id
+     * @param token 用户登录令牌
+     * @return
+     */
     @RequestMapping(value = "/admin/user/deleteUser",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String deleteUser(@RequestParam("userId")String id,@RequestParam("token")String token){
@@ -73,6 +91,14 @@ public class AdminController {
         return JSON.toString(response);
     }
 
+    /**
+     * 按页获取用户列表
+     * @param current 当前页码
+     * @param size 一页的大小
+     * @param token 用户登录令牌
+     * @param token 用户登录令牌
+     * @return
+     */
     @RequestMapping(value = "/admin/user/getAllUsers",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String getUsers(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size,

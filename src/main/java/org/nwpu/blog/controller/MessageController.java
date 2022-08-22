@@ -18,6 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 留言控制器类
+ * @author lzy
+ * @date2022/8/20
+ */
 @Slf4j
 @Controller
 public class MessageController {

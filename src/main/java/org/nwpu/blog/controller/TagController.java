@@ -16,12 +16,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 标签控制器类
+ * @author lzy
+ * @date 2022/8/18
+ */
 @Controller
 public class TagController {
 
     @Autowired
     private TagService tagService;
 
+    /**
+     * 按页获取获取标签
+     * @param current 当前页码
+     * @param size 一页的大小
+     * @return
+     */
     @RequestMapping(value = "/user/tag/getAllTag",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
     public String getTags(@RequestParam("currentPage")String current,@RequestParam("pageSize")String size){

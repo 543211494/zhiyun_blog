@@ -96,6 +96,9 @@ public class ArticleServiceImpl implements ArticleService {
     public boolean deleteArticleById(Integer articleId) {
         try{
             articleMapper.deleteArticleById(articleId);
+            articleMapper.deleteTagByArticleId(articleId);
+            articleMapper.deleteCategoryByArticleId(articleId);
+            articleMapper.deleteCollectionByArticleId(articleId);
         }catch(Exception e){
             e.printStackTrace();
             return false;

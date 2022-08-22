@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.nwpu.blog.mapper.DataMapper">
+    <resultMap id="wordcloud" type="org.nwpu.blog.result.WordCloud">
+        <id property="tagId" column="tag_id" jdbcType="INTEGER"></id>
+        <result property="tagName" column="tag_name" jdbcType="VARCHAR"></result>
+        <result property="count" column="tag_count" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <resultMap id="CategoryData" type="org.nwpu.blog.result.CategoryData">
+        <id property="categoryId" column="category_id" jdbcType="INTEGER"></id>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"></result>
+        <result property="count" column="category_count" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <resultMap id="CategoryCollection" type="org.nwpu.blog.result.CategoryCollection">
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"></result>
+        <result property="collectionNumber" column="collection_number" jdbcType="INTEGER"></result>
+    </resultMap>
+
+    <resultMap id="view" type="org.nwpu.blog.bean.View">
+        <result property="date" column="date"></result>
+        <result property="count" column="view_count"></result>
+    </resultMap>
+
+    <resultMap id="registerData" type="org.nwpu.blog.result.RegisterData">
+        <result property="date" column="register_date"></result>
+        <result property="count" column="register_count"></result>
+    </resultMap>
+
+    <!--  映射结果集，id为唯一标识符  -->
+    <resultMap id="article" type="org.nwpu.blog.bean.Article">
+        <!--    property为java类中的属性名，column为数据库中列名    -->
+        <id property="id" column="article_id" jdbcType="INTEGER"></id>
+        <result property="authorId" column="article_author_id" jdbcType="INTEGER"></result>
+        <result property="title" column="article_title" jdbcType="VARCHAR"></result>
+        <result property="content" column="article_content" jdbcType="VARCHAR"></result>
+        <result property="updateTime" column="article_update_time" jdbcType="TIMESTAMP"></result>
+        <result property="createTime" column="article_create_time" jdbcType="TIMESTAMP"></result>
+        <result property="summary" column="article_summary" jdbcType="VARCHAR"></result>
+        <result property="thumbnail" column="article_thumbnail" jdbcType="VARCHAR"></result>
+        <result property="isVisible" column="article_visible" jdbcType="INTEGER"></result>
+        <result property="isDeleted" column="article_deleted" jdbcType="INTEGER"></result>
+        <result property="category" column="category_name" jdbcType="VARCHAR"></result>
+        <collection property="tags" ofType="org.nwpu.blog.bean.Tag">
+            <id property="id" column="tag_id" jdbcType="INTEGER"></id>
+            <result property="name" column="tag_name" jdbcType="VARCHAR"></result>
+            <result property="updateTime" column="tag_create_time" jdbcType="TIMESTAMP"></result>
+            <result property="createTime" column="tag_update_time" jdbcType="TIMESTAMP"></result>
+            <result property="isDeleted" column="tag_deleted" jdbcType="INTEGER"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getWordCloudById" resultMap="wordcloud">
+        SELECT article_tag_ref.tag_id tag_id,
+               COUNT(article_tag_ref.tag_id) tag_count,
+               tag.tag_name tag_name
+        FROM article_tag_ref,tag
+        WHERE article_id IN(SELECT article_id
+                            FROM article
+                            WHERE article_author_id =#{userId})
+        AND tag.tag_id = article_tag_ref.tag_id
+        AND tag.tag_deleted = 0
+        GROUP BY article_tag_ref.tag_id
+        ORDER BY COUNT(article_tag_ref.tag_id) DESC
+    </select>
+
+    <select id="getAllWordCloud" resultMap="wordcloud">
+        SELECT article_tag_ref.tag_id tag_id,
+               COUNT(article_tag_ref.tag_id) tag_count,
+               tag.tag_name tag_name
+        FROM article_tag_ref,tag
+        WHERE tag.tag_id = article_tag_ref.tag_id
+        AND tag.tag_deleted = 0
+        GROUP BY article_tag_ref.tag_id
+        ORDER BY COUNT(article_tag_ref.tag_id) DESC
+        LIMIT 0,20
+    </select>
+
+    <select id="getCategoryDataById" resultMap="CategoryData">
+        SELECT article_category_ref.category_id category_id,
+               COUNT(article_category_ref.category_id) category_count,
+               category.category_name category_name
+        FROM article_category_ref,category
+        WHERE article_category_ref.article_id IN(SELECT article_id
+                                                 FROM article
+                                                 WHERE article_author_id =#{userId})
+        AND article_category_ref.category_id = category.category_id
+        AND category.category_deleted = 0
+        GROUP BY article_category_ref.category_id
+        ORDER BY COUNT(article_category_ref.category_id) DESC;
+    </select>
+
+    <select id="getAllCategories" resultMap="CategoryData">
+        SELECT article_category_ref.category_id category_id,
+               COUNT(article_category_ref.category_id) category_count,
+               category.category_name category_name
+        FROM article_category_ref,category
+        WHERE article_category_ref.category_id = category.category_id
+        AND category.category_deleted = 0
+        GROUP BY article_category_ref.category_id
+        ORDER BY COUNT(article_category_ref.category_id) DESC;
+    </select>
+
+    <select id="getCategoryCollectionById" resultMap="CategoryCollection">
+        SELECT category.category_name category_name,COUNT(temp.num) collection_number
+        FROM category,article_category_ref,(SELECT collection.article_id,COUNT(collection.article_id) num
+                                            FROM collection
+                                            WHERE collection.article_id IN (SELECT article.article_id
+                                                                            FROM article
+                                                                            WHERE article_author_id = #{userId}
+                                                                            AND article.article_deleted = 0)
+                                            GROUP BY collection.article_id) as temp
+        WHERE article_category_ref.article_id = temp.article_id
+        AND category.category_id = article_category_ref.category_id
+        GROUP BY category.category_name;
+    </select>
+
+    <select id="getCategoryCollections" resultMap="CategoryCollection">
+        SELECT category.category_name category_name,COUNT(temp.num) collection_number
+        FROM category,article_category_ref,(SELECT collection.article_id,COUNT(collection.article_id) num
+                                            FROM collection
+                                            WHERE collection.article_id IN (SELECT article.article_id
+                                                                            FROM article
+                                                                            WHERE article.article_deleted = 0)
+                                            GROUP BY collection.article_id) as temp
+        WHERE article_category_ref.article_id = temp.article_id
+        AND category.category_id = article_category_ref.category_id
+        GROUP BY category.category_name;
+    </select>
+
+    <select id="getViewsById" resultMap="view">
+        SELECT temp.date date,IFNULL(data.view_count,0) view_count
+        FROM (
+            SELECT CURDATE() AS date
+            UNION ALL
+            SELECT DATE_SUB(CURDATE(), INTERVAL 1 DAY) AS date
+            UNION ALL
+            SELECT DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS date
+            UNION ALL
+            SELECT DATE_SUB(CURDATE(), INTERVAL 3 DAY) AS date
+            UNION ALL
+            SELECT DATE_SUB(CURDATE(), INTERVAL 4 DAY) AS date
+            UNION ALL
+            SELECT DATE_SUB(CURDATE(), INTERVAL 5 DAY) AS date
+            UNION ALL
+            SELECT DATE_SUB(CURDATE(), INTERVAL 6 DAY) AS date
+        ) temp
+        LEFT JOIN (SELECT SUM(view_count) view_count,article_view.date date
+                   FROM article_view
+                   WHERE DATE_SUB(CURDATE(),INTERVAL 7 DAY) &lt;= article_view.date
+                   AND article_view.article_id IN (SELECT article.article_id
+                                                   FROM article
+                                                   WHERE article_author_id = #{userId}
+                                                   AND article_visible = 1
+                                                   AND article_deleted = 0)
+                   GROUP BY article_view.date) data
+        ON data.date = temp.date
+        ORDER BY temp.date
+    </select>
+
+    <select id="getRegisterData" resultMap="registerData">
+        SELECT temp.date register_date,IFNULL(data.number,0) register_count
+        FROM (
+                 SELECT CURDATE() AS date
+                 UNION ALL
+                 SELECT DATE_SUB(CURDATE(), INTERVAL 1 DAY) AS date
+                 UNION ALL
+                 SELECT DATE_SUB(CURDATE(), INTERVAL 2 DAY) AS date
+                 UNION ALL
+                 SELECT DATE_SUB(CURDATE(), INTERVAL 3 DAY) AS date
+                 UNION ALL
+                 SELECT DATE_SUB(CURDATE(), INTERVAL 4 DAY) AS date
+                 UNION ALL
+                 SELECT DATE_SUB(CURDATE(), INTERVAL 5 DAY) AS date
+                 UNION ALL
+                 SELECT DATE_SUB(CURDATE(), INTERVAL 6 DAY) AS date
+             ) temp
+             LEFT JOIN (SELECT DATE_FORMAT(user.user_register_time,'%Y-%m-%d') date,
+                        COUNT(DATE_FORMAT(user.user_register_time,'%Y-%m-%d')) number
+                        FROM user
+                        WHERE user.user_deleted = 0
+                        GROUP BY DATE_FORMAT(user.user_register_time,'%Y-%m-%d')) data
+             ON data.date = temp.date
+             ORDER BY temp.date;
+    </select>
+
+    <select id="getArticles" resultMap="article">
+        SELECT article.article_id article_id,article_author_id,article_title,article_content,
+               article_update_time,article_create_time,article_summary,
+               article_thumbnail,article_visible,article_deleted
+                ,category.category_name category_name,
+               tag.tag_id tag_id,tag.tag_name tag_name,tag.tag_create_time tag_create_time,
+               tag.tag_update_time tag_update_time,tag.tag_deleted tag_deleted
+        FROM article,category,tag,(SELECT article_view.article_id article_id,SUM(article_view.view_count) view_count
+                                   FROM article_view
+                                   WHERE article_view.article_id IN (SELECT article_id
+                                                                     FROM article
+                                                                     WHERE article_deleted = 0 AND article_visible = 1)
+                                   GROUP BY article_view.article_id
+                                   ORDER BY SUM(article_view.view_count) DESC
+                                   LIMIT 0,5) AS temp
+        WHERE article.article_id = temp.article_id
+          AND category.category_id IN (SELECT category_id
+                                       FROM article_category_ref
+                                       WHERE article_id = temp.article_id) AND tag.tag_id IN(SELECT tag_id
+                                                                                             FROM article_tag_ref
+                                                                                             WHERE article_id = temp.article_id);
+    </select>
+</mapper>

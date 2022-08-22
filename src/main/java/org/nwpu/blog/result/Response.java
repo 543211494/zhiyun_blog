@@ -11,7 +11,18 @@ import lombok.Data;
 @Data
 public class Response<T> {
 
+    /**
+     * 消息码
+     */
     private Integer code;
+
+    /**
+     * 消息信息
+     */
     private String message;
+
+    /**
+     * 消息数据体
+     */
     private T data;
 }

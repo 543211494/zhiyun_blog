@@ -23,6 +23,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * 文章控制器类
+ * @author lzy
+ * @date 2022/8/17
+ */
 @Slf4j
 @Controller
 public class ArticleController {
