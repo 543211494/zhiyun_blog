@@ -117,7 +117,9 @@ public class HomeController {
             String token = UUID.randomUUID().toString();
             /* 设置token2个小时过期 */
             String key = "user-token-"+user.getId();
-            redisTemplate.opsForValue().set(key,key+":"+token,2, TimeUnit.HOURS);
+            //redisTemplate.opsForValue().set(key,key+":"+token,2, TimeUnit.HOURS);
+            redisTemplate.opsForSet().add(key,key+":"+token);
+            redisTemplate.expire(key,2, TimeUnit.HOURS);
             map.put("token",key+":"+token);
             map.put("id",user.getId());
             map.put("userName",user.getUserName());

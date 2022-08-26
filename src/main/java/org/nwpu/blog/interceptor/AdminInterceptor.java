@@ -30,6 +30,7 @@ public class AdminInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        log.info(request.getRequestURI());
         String token = request.getParameter("token");
         if(token==null){
             throw new RuntimeException("1");
@@ -44,10 +45,16 @@ public class AdminInterceptor implements HandlerInterceptor {
         }catch(Exception e){
             throw new RuntimeException("1");
         }
-        String verification = (String) redisTemplate.opsForValue().get("user-token-"+userId);
-        if(verification==null||!verification.equals(token)){
+
+//        String verification = (String) redisTemplate.opsForValue().get("user-token-"+userId);
+//        if(verification==null||!verification.equals(token)){
+//            throw new RuntimeException("1");
+//        }
+
+        if(!redisTemplate.opsForSet().isMember(tokenInfo[0],token)){
             throw new RuntimeException("1");
         }
+
         User user = userService.getUserById(userId,false);
         if(user.getRole().equals(User.USER)){
             throw new RuntimeException("2");

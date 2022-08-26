@@ -31,6 +31,7 @@ public class UserInterceptor implements HandlerInterceptor {
 //            throw new RuntimeException("test!");
 //        }
 
+        log.info(request.getRequestURI());
         String token = request.getParameter("token");
         if(token==null){
             throw new RuntimeException("1");
@@ -39,11 +40,16 @@ public class UserInterceptor implements HandlerInterceptor {
         if(tokenInfo.length!=2){
             throw new RuntimeException("1");
         }
-        String verification = (String) redisTemplate.opsForValue().get(tokenInfo[0]);
-        log.info("token:"+verification);
-        if(verification==null||!verification.equals(token)){
+
+//        String verification = (String) redisTemplate.opsForValue().get(tokenInfo[0]);
+//        log.info("token:"+verification);
+//        if(verification==null||!verification.equals(token)){
+//            throw new RuntimeException("1");
+//        }
+        if(!redisTemplate.opsForSet().isMember(tokenInfo[0],token)){
             throw new RuntimeException("1");
         }
+
         return true;
     }
 }
