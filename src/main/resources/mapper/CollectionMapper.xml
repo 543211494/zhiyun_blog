@@ -13,4 +13,8 @@
         FROM DUAL
         WHERE NOT EXISTS (SELECT * FROM collection WHERE user_id = #{collection.userId} AND article_id = #{collection.articleId})
     </insert>
+
+    <delete id="deleteColection">
+        DELETE FROM collection WHERE user_id = #{collection.userId} AND article_id = #{collection.articleId}
+    </delete>
 </mapper>

@@ -22,4 +22,15 @@ public class CollectionServiceImpl implements CollectionService {
         }
         return true;
     }
+
+    @Override
+    public boolean cancelCollection(ArticleCollection collection) {
+        try{
+            collectionMapper.deleteColection(collection);
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }

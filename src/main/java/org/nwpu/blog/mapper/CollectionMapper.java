@@ -14,4 +14,11 @@ public interface CollectionMapper {
      * @return 操作结果
      */
     public boolean insertCollection(@Param("collection") ArticleCollection collection);
+
+    /**
+     * 取消收藏
+     * @param collection 要取消的收藏
+     * @return 操作结果
+     */
+    public boolean deleteColection(@Param("collection") ArticleCollection collection);
 }

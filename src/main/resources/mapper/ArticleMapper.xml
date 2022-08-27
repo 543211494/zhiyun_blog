@@ -107,7 +107,7 @@
     </update>
 
     <update id="updateArticleVisibleById">
-        UPDATE article SET article_visible = 1 WHERE article_id = #{articleId} AND article_deleted = 0
+        UPDATE article SET article_visible = #{pass} WHERE article_id = #{articleId} AND article_deleted = 0
     </update>
 
     <insert id="scoreArticle">

@@ -77,7 +77,7 @@ public interface ArticleService {
      * @param articleId 文章id
      * @return 操作结果
      */
-    public boolean passArticleById(Integer articleId);
+    public boolean passArticleById(Integer articleId,boolean isPass);
 
     /**
      * 给文章打分

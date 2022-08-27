@@ -76,9 +76,10 @@ public interface ArticleMapper {
     /**
      * 根据文章id审核通过文章
      * @param articleId 文章id
+     * @param pass 1表示通过审核，0表示不通过审核
      * @return 操作结果
      */
-    public boolean updateArticleVisibleById(@Param("articleId") Integer articleId);
+    public boolean updateArticleVisibleById(@Param("articleId") Integer articleId,@Param("pass") Integer pass);
 
     /**
      * 给文章打分

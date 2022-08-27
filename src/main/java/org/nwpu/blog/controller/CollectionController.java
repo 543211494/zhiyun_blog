@@ -59,4 +59,25 @@ public class CollectionController {
         response.setMessage("收藏成功!");
         return JSON.toString(response);
     }
+
+    @RequestMapping(value = "/user/article/cancelCollection",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @ResponseBody
+    public String cancelCollection(@RequestParam("articleId")String id,@RequestParam("token")String token){
+        Response response = new Response<Object>();
+        Integer articleId  = null;
+        try{
+            articleId = Integer.parseInt(id);
+        }catch(Exception e){
+            response.setCode(400);
+            response.setMessage("文章id格式错误!");
+            return JSON.toString(response);
+        }
+        /* 通过token获取用户id */
+        Integer userId = User.getIdByToken(token);
+        ArticleCollection collection = new ArticleCollection(userId,articleId);
+        collectionService.cancelCollection(collection);
+        response.setCode(200);
+        response.setMessage("取消收藏成功!");
+        return JSON.toString(response);
+    }
 }

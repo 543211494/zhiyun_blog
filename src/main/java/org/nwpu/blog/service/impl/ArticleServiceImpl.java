@@ -108,9 +108,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public boolean passArticleById(Integer articleId) {
+    public boolean passArticleById(Integer articleId,boolean isPass) {
         try{
-            articleMapper.updateArticleVisibleById(articleId);
+            if(isPass){
+                articleMapper.updateArticleVisibleById(articleId,1);
+            }else{
+                articleMapper.updateArticleVisibleById(articleId,0);
+            }
         }catch(Exception e){
             e.printStackTrace();
             return false;

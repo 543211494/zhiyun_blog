@@ -209,19 +209,22 @@ public class ArticleController {
      */
     @RequestMapping(value = "/admin/article/passArticle",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String passArticle(@RequestParam("articleId")String id,@RequestParam("token")String token){
+    public String passArticle(@RequestParam("articleId")String id,@RequestParam("pass")String pass,
+                              @RequestParam("token")String token){
         Response response = new Response<Object>();
         Integer articleId = null;
+        Integer isPass = null;
         try{
             articleId = Integer.parseInt(id);
+            isPass = Integer.parseInt(pass);
         }catch(Exception e){
             response.setCode(400);
             response.setMessage("文章id格式错误!");
             return JSON.toString(response);
         }
-        articleService.passArticleById(articleId);
+        articleService.passArticleById(articleId,isPass.intValue()==1);
         response.setCode(200);
-        response.setMessage("审核成功!");
+        response.setMessage("操作成功!");
         return JSON.toString(response);
     }
 
