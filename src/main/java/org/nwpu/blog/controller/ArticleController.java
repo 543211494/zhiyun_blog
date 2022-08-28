@@ -69,6 +69,11 @@ public class ArticleController {
                              @RequestParam("content")String content,@RequestParam("category")String category,
                              @RequestParam("tagList")String tagList){
         Response response = new Response<Object>();
+        log.info(token);
+        log.info(title);
+        log.info(content);
+        log.info(category);
+        log.info(tagList);
         if(title==null||title.isEmpty()||content==null||content.isEmpty()||category==null||category.isEmpty()||tagList==null||tagList.isEmpty()){
             response.setCode(400);
             response.setMessage("参数不能为空!");
@@ -196,6 +201,9 @@ public class ArticleController {
             return JSON.toString(response);
         }
         articleService.deleteArticleById(articleId);
+        /* 删除老标签和分类 */
+        articleService.deleteArticleCategoryById(articleId);
+        articleService.deleteArticleTagsById(articleId);
         response.setCode(200);
         response.setMessage("删除成功!");
         return JSON.toString(response);
