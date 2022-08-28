@@ -201,9 +201,6 @@ public class ArticleController {
             return JSON.toString(response);
         }
         articleService.deleteArticleById(articleId);
-        /* 删除老标签和分类 */
-        articleService.deleteArticleCategoryById(articleId);
-        articleService.deleteArticleTagsById(articleId);
         response.setCode(200);
         response.setMessage("删除成功!");
         return JSON.toString(response);
