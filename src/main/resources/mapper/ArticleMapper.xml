@@ -153,11 +153,11 @@
         ORDER BY score_article_id DESC
     </select>
 
-    <select id="searchScoreByArticleId" resultMap="score">
-        SELECT SUM(score_number) score,COUNT(score_number) score_count
-        FROM score
-        WHERE score_article_id = #{articleId}
-    </select>
+<!--    <select id="searchScoreByArticleId" resultMap="score">-->
+<!--        SELECT score_article_id articleId,SUM(score_number) score,COUNT(score_number) score_count-->
+<!--        FROM score-->
+<!--        WHERE score_article_id = #{articleId}-->
+<!--    </select>-->
 
     <select id="listCollectionsByUserId" resultMap="article">
         SELECT article_id,article_author_id,article_title,article_content,
@@ -297,5 +297,12 @@
         SELECT score_article_id articleId
         FROM score
         WHERE score.score_article_id = #{articleId} AND score.score_user_id = #{userId}
+    </select>
+
+    <select id="searchScoreByUserId" resultType="java.lang.Integer">
+        SELECT score_number
+        FROM score
+        WHERE score_article_id = #{articleId}
+        AND score_user_id = #{userId}
     </select>
 </mapper>

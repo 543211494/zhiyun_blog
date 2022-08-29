@@ -69,11 +69,11 @@ public class ArticleController {
                              @RequestParam("content")String content,@RequestParam("category")String category,
                              @RequestParam("tagList")String tagList){
         Response response = new Response<Object>();
-        log.info(token);
-        log.info(title);
-        log.info(content);
-        log.info(category);
-        log.info(tagList);
+//        log.info(token);
+//        log.info(title);
+//        log.info(content);
+//        log.info(category);
+//        log.info(tagList);
         if(title==null||title.isEmpty()||content==null||content.isEmpty()||category==null||category.isEmpty()||tagList==null||tagList.isEmpty()){
             response.setCode(400);
             response.setMessage("参数不能为空!");
@@ -331,10 +331,7 @@ public class ArticleController {
         }
         response.setCode(200);
         articleService.addArticleView(articleId);
-        Double avgScore = articleService.searchAvgScoreByArticleId(articleId);
-        if(avgScore==null){
-            avgScore = 0.0;
-        }
+        Integer score = articleService.getScoreByUserId(userId,articleId);
         boolean hasScored = articleService.getScoreById(userId,articleId)!=null;
         boolean hasCollection = articleService.getCollectionById(userId,articleId)!=null;
         Map<String,Object> data = new HashMap<String,Object>();
@@ -348,7 +345,7 @@ public class ArticleController {
         data.put("category",article.getCategory());
         data.put("tags",article.getTags());
         data.put("view",articleService.searchArticleViewById(articleId));
-        data.put("score",avgScore);
+        data.put("score",score);
         data.put("hasScored",hasScored);
         data.put("hasCollection",hasCollection);
         response.setData(data);

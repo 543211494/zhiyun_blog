@@ -189,15 +189,15 @@ public class ArticleServiceImpl implements ArticleService {
         return articleMapper.listScoresByArticleId(articles);
     }
 
-    @Override
-    public Double searchAvgScoreByArticleId(Integer articleId) {
-        Score score = articleMapper.searchScoreByArticleId(articleId);
-        if(score.getArticleId()==null){
-            return null;
-        }else{
-            return score.getScore().doubleValue()/score.getCount().doubleValue();
-        }
-    }
+//    @Override
+//    public Double searchAvgScoreByArticleId(Integer articleId) {
+//        Score score = articleMapper.searchScoreByArticleId(articleId);
+//        if(score.getArticleId()==null){
+//            return null;
+//        }else{
+//            return score.getScore().doubleValue()/score.getCount().doubleValue();
+//        }
+//    }
 
     @Override
     public Integer listCollectionsByUserId(Integer userId, Integer currentPage, Integer pageSize, List<Article> result) {
@@ -290,5 +290,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Score getScoreById(Integer userId, Integer articleId) {
         return articleMapper.searchScoreById(userId,articleId);
+    }
+
+    @Override
+    public Integer getScoreByUserId(Integer userId, Integer articleId) {
+        Integer score = articleMapper.searchScoreByUserId(userId,articleId);
+        if(score==null){
+            score = 0;
+        }
+        return score;
     }
 }

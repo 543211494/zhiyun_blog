@@ -117,7 +117,7 @@ public interface ArticleMapper {
      * @param articleId 文章id
      * @return 查询结果
      */
-    public Score searchScoreByArticleId(@Param("articleId")Integer articleId);
+    //public Score searchScoreByArticleId(@Param("articleId")Integer articleId);
 
     /**
      * 查询一个用户的全部收藏文章
@@ -207,4 +207,12 @@ public interface ArticleMapper {
      * @return 查询结果
      */
     public Score searchScoreById(@Param("userId") Integer userId,@Param("articleId") Integer articleId);
+
+    /**
+     * 差寻某个用户给文章打的分
+     * @param userId 用户id
+     * @param articleId 文章id
+     * @return
+     */
+    public Integer searchScoreByUserId(@Param("userId")Integer userId,@Param("articleId")Integer articleId);
 }

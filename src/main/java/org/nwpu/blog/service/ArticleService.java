@@ -132,7 +132,7 @@ public interface ArticleService {
      * @param articleId 文章id
      * @return
      */
-    public Double searchAvgScoreByArticleId(Integer articleId);
+    //public Double searchAvgScoreByArticleId(Integer articleId);
 
     /**
      * 按页查询指定用户的收藏
@@ -213,4 +213,12 @@ public interface ArticleService {
      * @return 查询结果
      */
     public Score getScoreById(Integer userId,Integer articleId);
+
+    /**
+     * 根据用户id和文章id查询一个用户给文章打的分
+     * @param userId 用户id
+     * @param articleId 文章id
+     * @return
+     */
+    public Integer getScoreByUserId(Integer userId,Integer articleId);
 }
