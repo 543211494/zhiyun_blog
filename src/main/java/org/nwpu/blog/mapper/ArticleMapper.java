@@ -150,10 +150,10 @@ public interface ArticleMapper {
     /**
      * 根据分类查询文章
      * @param category 分类名称，若为null查询全部
-     * @param isPassed true表示查询通过审核的，false表示查询未通过审核的
+     * @param choice 0查询全部，1查询审核通过，2查询审核不通过。
      * @return 文章列表
      */
-    public List<Article> listArticlesByCategory(@Param("category") String category,@Param("isPassed") boolean isPassed);
+    public List<Article> listArticlesByCategory(@Param("category") String category,@Param("choice") Integer choice);
 
     /**
      * 根据标签名称查询文章

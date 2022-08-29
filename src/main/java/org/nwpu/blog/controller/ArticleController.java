@@ -323,7 +323,7 @@ public class ArticleController {
             response.setMessage("参数格式错误!");
             return JSON.toString(response);
         }
-        Article article = articleService.getArticleById(articleId,true,true,true);
+        Article article = articleService.getArticleById(articleId,true,false,true);
         if(article==null){
             response.setCode(400);
             response.setMessage("文章不存在!");
@@ -543,7 +543,8 @@ public class ArticleController {
         }
         /* 按页查询文章 */
         List<Article> articleList = new ArrayList<Article>();
-        pageNum = articleService.listArticlesByCategory(category,currentPage,pageSize,articleList,isPassed.intValue()==1);
+
+        pageNum = articleService.listArticlesByCategory(category,currentPage,pageSize,articleList,isPassed);
         /* 查询文章平均评分和阅读量 */
         this.setArticlesViewAndScore(articleList);
         Map<String,Object> data = new HashMap<String,Object>();

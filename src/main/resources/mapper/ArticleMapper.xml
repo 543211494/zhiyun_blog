@@ -225,8 +225,8 @@
                              FROM article_tag_ref
                              WHERE article_tag_ref.article_id = article.article_id)
           AND article_deleted = 0
-          <if test="isPassed">AND article_visible = 1</if>
-          <if test="!isPassed">AND article_visible = 0</if>
+          <if test="choice == 1">AND article_visible = 1</if>
+          <if test="choice == 2">AND article_visible = 0</if>
         ORDER BY article_id DESC
     </select>
 

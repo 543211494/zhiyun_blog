@@ -171,10 +171,10 @@ public interface ArticleService {
      * @param currentPage 当前页码
      * @param pageSize 一页的大小
      * @param result 查询结果
-     * @param isPassed true表示查询通过审核的，false表示查询未通过审核的
+     * @param choice 0查询全部，1查询审核通过，2查询审核不通过。
      * @return 总页数
      */
-    public Integer listArticlesByCategory(String category,Integer currentPage,Integer pageSize,List<Article> result,boolean isPassed);
+    public Integer listArticlesByCategory(String category,Integer currentPage,Integer pageSize,List<Article> result,Integer choice);
 
     /**
      * 根据标签查询文章

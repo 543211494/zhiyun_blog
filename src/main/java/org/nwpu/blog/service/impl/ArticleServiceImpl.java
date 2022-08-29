@@ -232,10 +232,10 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Integer listArticlesByCategory(String category, Integer currentPage, Integer pageSize, List<Article> result, boolean isPassed) {
+    public Integer listArticlesByCategory(String category, Integer currentPage, Integer pageSize, List<Article> result, Integer choice) {
         int start = (currentPage.intValue()-1)*pageSize;
         int pageNum;
-        List<Article> articles = articleMapper.listArticlesByCategory(category,isPassed);
+        List<Article> articles = articleMapper.listArticlesByCategory(category,choice);
         pageNum = (articles.size()/pageSize)+(articles.size()%pageSize==0?0:1);
         if(start>=articles.size()){
             return pageNum;

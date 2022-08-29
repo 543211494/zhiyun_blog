@@ -93,6 +93,6 @@
     </select>
 
     <select id="getUsersSize" resultType="java.lang.Integer">
-        SELECT COUNT(user_id) FROM user
+        SELECT COUNT(user_id) FROM user WHERE user_deleted = 0
     </select>
 </mapper>
