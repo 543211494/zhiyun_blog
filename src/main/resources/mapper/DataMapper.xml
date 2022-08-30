@@ -88,7 +88,7 @@
         AND article_category_ref.category_id = category.category_id
         AND category.category_deleted = 0
         GROUP BY article_category_ref.category_id
-        ORDER BY COUNT(article_category_ref.category_id) DESC;
+        ORDER BY COUNT(article_category_ref.category_id) DESC
     </select>
 
     <select id="getAllCategories" resultMap="CategoryData">
@@ -99,7 +99,7 @@
         WHERE article_category_ref.category_id = category.category_id
         AND category.category_deleted = 0
         GROUP BY article_category_ref.category_id
-        ORDER BY COUNT(article_category_ref.category_id) DESC;
+        ORDER BY COUNT(article_category_ref.category_id) DESC
     </select>
 
     <select id="getCategoryCollectionById" resultMap="CategoryCollection">
@@ -113,7 +113,7 @@
                                             GROUP BY collection.article_id) as temp
         WHERE article_category_ref.article_id = temp.article_id
         AND category.category_id = article_category_ref.category_id
-        GROUP BY category.category_name;
+        GROUP BY category.category_name
     </select>
 
     <select id="getCategoryCollections" resultMap="CategoryCollection">
@@ -126,7 +126,7 @@
                                             GROUP BY collection.article_id) as temp
         WHERE article_category_ref.article_id = temp.article_id
         AND category.category_id = article_category_ref.category_id
-        GROUP BY category.category_name;
+        GROUP BY category.category_name
     </select>
 
     <select id="getViewsById" resultMap="view">
@@ -205,6 +205,6 @@
                                        FROM article_category_ref
                                        WHERE article_id = temp.article_id) AND tag.tag_id IN(SELECT tag_id
                                                                                              FROM article_tag_ref
-                                                                                             WHERE article_id = temp.article_id);
+                                                                                             WHERE article_id = temp.article_id)
     </select>
 </mapper>

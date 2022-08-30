@@ -78,6 +78,8 @@ public class NoticeController {
     @ResponseBody
     public String updateNotice(@RequestParam("noticeId")String id,@RequestParam("content")String content,
                                @RequestParam("order")String order,@RequestParam("token")String token){
+//        System.out.println(id);
+//        System.out.println(order);
         Response response = new Response<Object>();
         Integer noticeId = null;
         Integer noticeOrder = null;

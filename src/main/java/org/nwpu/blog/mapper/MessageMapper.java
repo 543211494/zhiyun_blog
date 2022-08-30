@@ -43,7 +43,7 @@ public interface MessageMapper {
      * @param isParent 是否只查询一级评论
      * @return 一级评论总数
      */
-    public Integer countMessages(@Param("isParent") boolean isParent);
+    public Integer countParentMessages(@Param("isParent") boolean isParent);
 
     /**
      * 按页查询一级评论

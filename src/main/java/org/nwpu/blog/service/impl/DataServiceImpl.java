@@ -108,7 +108,7 @@ public class DataServiceImpl implements DataService {
         List<RegisterData> result = null;
         try{
             result = dataMapper.getRegisterData();
-            System.out.println(result.size());
+            //System.out.println(result.size());
         }catch(Exception e){
             e.printStackTrace();
             return result;

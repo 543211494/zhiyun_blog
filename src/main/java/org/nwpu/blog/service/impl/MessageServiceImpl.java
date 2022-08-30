@@ -33,7 +33,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer getMessageBoard(Integer currentPage, Integer pageSize, List<Message> result) {
         int start = (currentPage.intValue()-1)*pageSize.intValue();
-        int total = messageMapper.countMessages(true).intValue();
+        int total = messageMapper.countParentMessages(true).intValue();
         int pageNum = (total/pageSize)+(total%pageSize==0?0:1);
         List<Message> parent = messageMapper.searchParentMessages(start,pageSize);
         if(parent==null||parent.size()==0){
