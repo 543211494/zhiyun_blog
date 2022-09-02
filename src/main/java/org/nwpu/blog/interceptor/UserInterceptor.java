@@ -9,6 +9,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author lzy
@@ -32,6 +38,12 @@ public class UserInterceptor implements HandlerInterceptor {
 //        }
 
         log.info(request.getRequestURI());
+//        System.out.println("==========body=========");
+//        Collection<Part> parts = request.getParts();
+//        for(Part part:parts){
+//            System.out.println(part.getName());
+//        }
+
         String token = request.getParameter("token");
         if(token==null){
             throw new RuntimeException("1");

@@ -77,9 +77,6 @@ public class ArticleController {
         if(title==null||title.isEmpty()||content==null||content.isEmpty()||category==null||category.isEmpty()||tagList==null||tagList.isEmpty()){
             response.setCode(400);
             response.setMessage("参数不能为空!");
-        }else if(content.length()>Article.MAXLENGTH){
-            response.setCode(351);
-            response.setMessage("文章长度过长!");
         }else{
             /* 通过token获取用户id */
             Integer userId = Integer.parseInt(token.split(":")[0].split("-")[2]);
@@ -241,7 +238,7 @@ public class ArticleController {
      * @param session HttpSession
      * @return 操作结果
      */
-    @RequestMapping(value = "/user/article/uploadThumbnail",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/user/article/uploadThumbnail",produces = "application/json;charset=utf-8")
     @ResponseBody
     public String uploadThumbnail(@RequestParam("thumbnail")MultipartFile file,@RequestParam("articleId")String id,
                                   @RequestParam("token")String token,HttpSession session){

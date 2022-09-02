@@ -122,7 +122,7 @@
     </insert>
 
     <select id="listArticlesByAuthorId" resultMap="article">
-        SELECT article_id,article_author_id,article_title,article_content,
+        SELECT article_id,article_author_id,article_title,
                article_update_time,article_create_time,article_summary,
                article_thumbnail,article_visible,article_deleted,
                category.category_name category_name,
@@ -160,7 +160,7 @@
 <!--    </select>-->
 
     <select id="listCollectionsByUserId" resultMap="article">
-        SELECT article_id,article_author_id,article_title,article_content,
+        SELECT article_id,article_author_id,article_title,
                article_update_time,article_create_time,article_summary,
                article_thumbnail,article_visible,article_deleted,
                category.category_name category_name,
@@ -208,7 +208,7 @@
     </select>
 
     <select id="listArticlesByCategory" resultMap="article">
-        SELECT article_id,article_author_id,article_title,article_content,
+        SELECT article_id,article_author_id,article_title,
                article_update_time,article_create_time,article_summary,
                article_thumbnail,article_visible,article_deleted,
                category.category_name category_name,
@@ -231,7 +231,7 @@
     </select>
 
     <select id="listArticlesByTag" resultMap="article">
-        SELECT article_id,article_author_id,article_title,article_content,
+        SELECT article_id,article_author_id,article_title,
                article_update_time,article_create_time,article_summary,
                article_thumbnail,article_visible,article_deleted,
                category.category_name category_name,
@@ -255,7 +255,7 @@
     </select>
 
     <select id="listArticleByTitle" resultMap="article">
-        SELECT article_id,article_author_id,article_title,article_content,
+        SELECT article_id,article_author_id,article_title,
                article_update_time,article_create_time,article_summary,
                article_thumbnail,article_visible,article_deleted,
                category.category_name category_name,

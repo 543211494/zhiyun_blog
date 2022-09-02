@@ -40,9 +40,9 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "/user/user/uploadAvatar",method = RequestMethod.POST,produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/user/user/uploadAvatar",produces = "application/json;charset=utf-8")
     @ResponseBody
-    public String uploadAvatar(@RequestParam("avatar") MultipartFile file, @RequestParam("token")String token,
+    public String uploadAvatar(@RequestParam(value = "avatar",required = false) MultipartFile file, @RequestParam("token")String token,
                                HttpSession session) {
         Response response = new Response<Object>();
         Integer userId = User.getIdByToken(token);
